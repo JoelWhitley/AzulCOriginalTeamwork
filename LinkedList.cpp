@@ -4,7 +4,7 @@
 Node::Node(int value, Node* next) :
     value(value),
     next(next) 
-    {}
+{}
 
 LinkedList::LinkedList() {
     head = nullptr;
@@ -27,19 +27,24 @@ int LinkedList::size() {
 }
 
 int LinkedList::get(int index) {
+
+    int outputValue = 0;
     int count = 0;
     Node* current = head;
+    
     if(index < size()) {
         while(count < index) {
             ++count;
             current = current->next;
         }
-        return current->value;
+        outputValue = current->value;
     }
     else {
         // change to a throw statement
         std::cout << "out of range" << std::endl;
     }
+    return outputValue;
+
 }
 
 bool LinkedList::get(int index, int& returnValue)  {
@@ -63,8 +68,9 @@ void LinkedList::addFront(int value) {
     if(head != nullptr) {
         toAdd->next = head;
     }
-    head == toAdd;   
+    head = toAdd;   
 }
+
 void LinkedList::addBack(int value) {
    Node* toAdd = new Node(value, nullptr);
    if (head == nullptr) {

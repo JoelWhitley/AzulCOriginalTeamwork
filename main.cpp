@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+#include "Player.h"
 
 void mainMenu();
+void newGame();
 void printCredits();
 
 bool running;
@@ -23,16 +25,20 @@ void mainMenu() {
 	int choice = 0;
 	
 	std::cout << "*** Welcome to 🅰 🆉 🆄 🅻 ***" << std::endl;
-	std::cout << "(1): Credits" << std::endl;
-    std::cout << "(2): Exit without Saving" << std::endl;
+	std::cout << "(1): New Game" << std::endl;
+    std::cout << "(2): Credits" << std::endl;
+    std::cout << "(3): Exit without Saving" << std::endl;
 	std::cin >> choice;
-	
+    	
 	switch(choice)
 	{
 	case 1:
+        newGame();
+        break;    
+    case 2:
 		printCredits();
 		break;
-    case 2:
+    case 3:
         running = false;
         std::cout << "Goodbye." << std::endl;
         break;
@@ -43,6 +49,26 @@ void mainMenu() {
 
     return;
 
+}
+
+void newGame() {
+
+    std::string player1name;
+    std::string player2name;
+    // Game game;
+
+    std::cout << "Enter a name for Player 1:" << std::endl;
+    std::cin >> player1name;
+    std::cout << "Enter a name for Player 2:" << std::endl;
+    std::cin >> player2name;
+
+    Player* player1 = new Player(player1name);
+    Player* player2 = new Player(player2name);
+
+    // game = new Game(player1, player2);
+    std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
+    // game->play();
+    
 }
 
 void printCredits() {
