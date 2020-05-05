@@ -1,7 +1,7 @@
 #include <iostream>
 #include "LinkedList.h"
 
-Node::Node(int value, Node* next) :
+Node::Node(char value, Node* next) :
     value(value),
     next(next) 
 {}
@@ -26,7 +26,7 @@ int LinkedList::size() {
     return count;
 }
 
-int LinkedList::get(int index) {
+char LinkedList::get(int index) {
 
     int outputValue = 0;
     int count = 0;
@@ -47,7 +47,7 @@ int LinkedList::get(int index) {
 
 }
 
-bool LinkedList::get(int index, int& returnValue)  {
+bool LinkedList::get(int index, char& returnValue)  {
    bool error = true;
    int count = 0;
    Node* current = head;
@@ -63,7 +63,7 @@ bool LinkedList::get(int index, int& returnValue)  {
    return error;
 }
 
-void LinkedList::addFront(int value) {
+void LinkedList::addFront(char value) {
     Node* toAdd = new Node(value,nullptr);
     if(head != nullptr) {
         toAdd->next = head;
@@ -71,7 +71,7 @@ void LinkedList::addFront(int value) {
     head = toAdd;   
 }
 
-void LinkedList::addBack(int value) {
+void LinkedList::addBack(char value) {
    Node* toAdd = new Node(value, nullptr);
    if (head == nullptr) {
       head = toAdd;

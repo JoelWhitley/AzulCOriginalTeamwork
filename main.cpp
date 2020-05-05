@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include "Player.h"
+#include "Game.h"
 
 void mainMenu();
 void newGame();
@@ -65,9 +66,9 @@ void newGame() {
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
-    // game = new Game(player1, player2);
+    Game* game = new Game(player1, player2);
     std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
-    // game->play();
+    game->play();
     
 }
 

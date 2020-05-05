@@ -1,7 +1,7 @@
 class Node {
     public:
-        Node(int value, Node * next);
-        int value;
+        Node(char value, Node * next);
+        char value;
         Node* next;
 };
 
@@ -13,11 +13,11 @@ class LinkedList {
 
     int size();
     
-    int get(int index);
-    bool get(int index, int& returnValue);
+    char get(int index);
+    bool get(int index, char& returnValue);
 
-    void addBack(int value);
-    void addFront(int value);
+    void addBack(char value);
+    void addFront(char value);
 
     void removeBack();
     void removeFront();

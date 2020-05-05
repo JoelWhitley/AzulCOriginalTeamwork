@@ -4,9 +4,6 @@ Player::Player(std::string name)
    : name(name), points(0) {
 }
 
-Player::Player(std::string name, int points)
-   : name(name), points(points) {
-}
 
 Player::~Player() {
    delete this;
@@ -21,5 +18,5 @@ int Player::getPoints(){
 }
 
 void Player::addPoints(int points){
-    points += points;
+    this->points += points;
 }
