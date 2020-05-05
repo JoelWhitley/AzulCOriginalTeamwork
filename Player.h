@@ -13,11 +13,16 @@ public:
    std::string getName();
    int getPoints();
    void addPoints(int points);
+   void populateStorages();
+   void printStorageLine(int row);
+   void printMosaicLine(int row);
 
 private:
 
     std::string name;
     int points;
+    char** storage = new char*[5];
+    char mosaic[5][5];
 
 };
 

@@ -6,6 +6,7 @@ class Game {
         ~Game();
         char factoryGeneration();
         void play();
+        void printMosaic(Player* p);
     private:
         Player p1;
         Player p2;

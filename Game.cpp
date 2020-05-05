@@ -20,7 +20,7 @@ char Game::factoryGeneration() {
 void Game::play() {
     Player playersTurn = p1;
 
-    //populate factories
+    //populate factories, to be replaced with randomiser
     char options[5] = {RED,YELLOW,BLUE,LIGHT_BLUE,BLACK};
     char factories[5][4];
     LinkedList* pile = new LinkedList;
@@ -36,5 +36,22 @@ void Game::play() {
         std::cout << std::endl;
     }
 
+    //print mosaic for the player whos turn it is
+    printMosaic(&playersTurn);
+
+}
+
+void Game::printMosaic(Player* p) {
+    std::cout << "Mosaic for " << p->getName() << ":" << std::endl;
+    for(int i = 0;i < 5;++i) {
+        std::cout << i + 1 << ": ";
+        for(int j = 0;4 > i + j;++j) {
+            std::cout << " ";
+        }
+        p->printStorageLine(i);
+        std::cout << "||";
+        p->printMosaicLine(i);
+        std::cout << std::endl;
+    }
     
 }
