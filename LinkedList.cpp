@@ -7,17 +7,17 @@ Node::Node(char value, Node* next) :
 {}
 
 LinkedList::LinkedList() {
-    head = nullptr;
+    this->head = nullptr;
 }
 LinkedList::LinkedList(const LinkedList& other) {
 
 }
 LinkedList::~LinkedList() {
-
+    delete this;
 }
 
 int LinkedList::size() {
-    Node* current = head;
+    Node* current = this->head;
     int count = 0;
     while(current != nullptr) {
         ++count;
@@ -65,18 +65,19 @@ bool LinkedList::get(int index, char& returnValue)  {
 
 void LinkedList::addFront(char value) {
     Node* toAdd = new Node(value,nullptr);
-    if(head != nullptr) {
-        toAdd->next = head;
+    if(this->head != nullptr) {
+        toAdd->next = this->head;
+        
     }
-    head = toAdd;   
+    this->head = toAdd;
 }
 
 void LinkedList::addBack(char value) {
    Node* toAdd = new Node(value, nullptr);
-   if (head == nullptr) {
-      head = toAdd;
+   if (this->head == nullptr) {
+      this->head = toAdd;
    } else {
-      Node* current = head;
+      Node* current = this->head;
       while(current->next != nullptr) {
          current = current->next;
       }
@@ -85,27 +86,27 @@ void LinkedList::addBack(char value) {
 }
 
 void LinkedList::removeBack() {
-    if(head != nullptr) {
-        if(head->next != nullptr) {
-            Node* current = head;
+    if(this->head != nullptr) {
+        if(this->head->next != nullptr) {
+            Node* current = this->head;
             while(current->next->next != nullptr) {
                 current = current->next;
             }
             current->next = nullptr;
         }
         else {
-            head = nullptr;
+            this->head = nullptr;
         }
     }
 }
 
 void LinkedList::removeFront() {
-    Node* current = head;
-    head = nullptr;
-    head = current->next;
+    Node* current = this->head;
+    this->head = nullptr;
+    this->head = current->next;
 }
 void LinkedList::clear() {
-    Node* current = head;
+    Node* current = this->head;
     while(current->next != nullptr) {
         current = nullptr;
     }

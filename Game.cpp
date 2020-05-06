@@ -1,5 +1,4 @@
 #include "Game.h"
-#include "LinkedList.h"
 #include <string>
 #include <iostream>
 
@@ -22,7 +21,6 @@ void Game::play() {
 
     //populate factories, to be replaced with randomiser
     char options[5] = {RED,YELLOW,BLUE,LIGHT_BLUE,BLACK};
-    char factories[5][4];
     LinkedList* pile = new LinkedList;
     pile->addFront('F');
     std::cout << "Factories: " << std::endl;
@@ -30,14 +28,20 @@ void Game::play() {
     for(int i = 0;i<5;++i) {
         std::cout << i + 1 << ": ";
         for(int j = 0;j<4;++j) {
-            factories[i][j] = options[i];
-            std::cout << factories[i][j] << " ";
+            this->factories[i][j] = options[i];
+            std::cout << this->factories[i][j] << " ";
         }
         std::cout << std::endl;
     }
 
     //print mosaic for the player whos turn it is
     printMosaic(&playersTurn);
+    if(turn(&playersTurn)) {
+        std::cout << "success" << std::endl;
+    }
+    else { 
+        std::cout << "fail" << std::endl;
+    }
 
 }
 
@@ -54,4 +58,37 @@ void Game::printMosaic(Player* p) {
         std::cout << std::endl;
     }
     
+}
+bool Game::turn(Player* p) {
+    std::cout << "it is " << p->getName() << "'s turn: " << std::endl;
+    std::string key;
+    int factoryRow;
+    char tile;
+    int row = 0;
+    std::cin >> key >> factoryRow >> tile >> row;
+    LinkedList* found = nullptr;
+    if(p->countStorage(row,tile) < 0) {
+        return false;
+    }
+    
+    if(key == "turn") {
+        if(factoryRow < 6 && factoryRow >= 0) {
+            for(int i = 0;i<4;++i) {
+                if(this->factories[factoryRow-1][i] == tile) {
+                    found->addFront(factories[factoryRow][i]);
+                }
+            }
+            if(found->size() == 0) {
+                return false;
+            }
+            else {
+                for(int i = 0;i < found->size();++i) {
+                    p->setStorage(row,found);
+                }
+                return true;
+            }
+        }
+    }
+    return false;
+
 }

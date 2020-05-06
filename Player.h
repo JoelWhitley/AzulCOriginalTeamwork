@@ -1,8 +1,10 @@
 #ifndef AZUL_PLAYER
 #define AZUL_PLAYER
 
+#include "LinkedList.h"
 #include "Types.h"
 #include <iostream>
+
 
 class Player {
 public:
@@ -13,6 +15,8 @@ public:
    std::string getName();
    int getPoints();
    void addPoints(int points);
+   int countStorage(int row,char tile);
+   void setStorage(int row, LinkedList* toInsert);
    void populateStorages();
    void printStorageLine(int row);
    void printMosaicLine(int row);

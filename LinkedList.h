@@ -7,22 +7,22 @@ class Node {
 
 class LinkedList {
     public:
-    LinkedList();
-    LinkedList(const LinkedList& other);
-    ~LinkedList();
+        LinkedList();
+        LinkedList(const LinkedList& other);
+        ~LinkedList();
 
-    int size();
-    
-    char get(int index);
-    bool get(int index, char& returnValue);
+        int size();
+        
+        char get(int index);
+        bool get(int index, char& returnValue);
 
-    void addBack(char value);
-    void addFront(char value);
+        void addBack(char value);
+        void addFront(char value);
 
-    void removeBack();
-    void removeFront();
+        void removeBack();
+        void removeFront();
 
-    void clear();
+        void clear();
 
     private:
         Node* head;

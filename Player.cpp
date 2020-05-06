@@ -1,5 +1,6 @@
 #include "Player.h"
 
+
 Player::Player(std::string name)
    : name(name), points(0) {
        populateStorages();
@@ -27,19 +28,43 @@ void Player::populateStorages() {
         this->storage[i] = new char[i + 1];    
         for(int j = 0;j < i + 1;++j) {
             this->storage[i][j] = NO_TILE; 
-            std::cout << this->storage[i][j]; 
         }
-        std::cout << std::endl;
     } 
     for(int i = 0;i < 5;++i) {   
         for(int j = 0;j < 5;++j) {
-            this->mosaic[i][j] = NO_TILE; 
-            std::cout << this->mosaic[i][j]; 
+            this->mosaic[i][j] = NO_TILE;    
         }
-        std::cout << std::endl;
     }    
 }
+int Player::countStorage(int row,char tile) {
+    int count = 0;
+    for(int i = 0;i < row;++i) {
+        if(this->storage[row-1][i] != NO_TILE && this->storage[row-1][i] != tile) {
+            return -1;
+        }
+        else {
+            if(this->storage[row-1][i] == tile) {
+                ++count;
+            }
+        }
+    }
+    return count;
+}
+void Player::setStorage(int row, LinkedList* toInsert) {
+    char tile = toInsert->get(0);
+    int count = this->countStorage(row,tile);
 
+    for(int i = 0;i < toInsert->size();++i) {
+        if(count <= row) {
+            this->storage[row-1][count] = tile;
+            ++count;
+        }
+        else {
+            //add to broken tiles
+            ++count;
+        }
+    }
+}
 void Player::printStorageLine(int row) {
     for(int i = 0;i < row + 1;++i) {
         std::cout << this->storage[row][i];        
