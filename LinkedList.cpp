@@ -65,9 +65,8 @@ bool LinkedList::get(int index, char& returnValue)  {
 
 void LinkedList::addFront(char value) {
     Node* toAdd = new Node(value,nullptr);
-    if(this->head != nullptr) {
-        toAdd->next = this->head;
-        
+    if(&(this->head) != nullptr) {
+        toAdd->next = this->head;  
     }
     this->head = toAdd;
 }

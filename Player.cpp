@@ -36,6 +36,8 @@ void Player::populateStorages() {
         }
     }    
 }
+
+// this method returns the amount of tiles of the same colour as the inputed one are in the row, returns -1 if there is different coloured tiles
 int Player::countStorage(int row,char tile) {
     int count = 0;
     for(int i = 0;i < row;++i) {

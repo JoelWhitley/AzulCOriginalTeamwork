@@ -21,7 +21,7 @@ void Game::play() {
 
     //populate factories, to be replaced with randomiser
     char options[5] = {RED,YELLOW,BLUE,LIGHT_BLUE,BLACK};
-    LinkedList* pile = new LinkedList;
+    LinkedList* pile = new LinkedList();
     pile->addFront('F');
     std::cout << "Factories: " << std::endl;
     std::cout << "0: " << pile->get(0) << std::endl;
@@ -42,6 +42,7 @@ void Game::play() {
     else { 
         std::cout << "fail" << std::endl;
     }
+    printMosaic(&playersTurn);
 
 }
 
@@ -66,7 +67,7 @@ bool Game::turn(Player* p) {
     char tile;
     int row = 0;
     std::cin >> key >> factoryRow >> tile >> row;
-    LinkedList* found = nullptr;
+    LinkedList* found = new LinkedList();
     if(p->countStorage(row,tile) < 0) {
         return false;
     }
@@ -75,16 +76,14 @@ bool Game::turn(Player* p) {
         if(factoryRow < 6 && factoryRow >= 0) {
             for(int i = 0;i<4;++i) {
                 if(this->factories[factoryRow-1][i] == tile) {
-                    found->addFront(factories[factoryRow][i]);
+                    found->addFront(factories[factoryRow-1][i]);
                 }
             }
             if(found->size() == 0) {
                 return false;
             }
             else {
-                for(int i = 0;i < found->size();++i) {
-                    p->setStorage(row,found);
-                }
+                p->setStorage(row,found);
                 return true;
             }
         }
