@@ -42,11 +42,11 @@ void Player::populateStorages() {
 int Player::countStorage(int row,char tile) {
     int count = 0;
     for(int i = 0;i < row;++i) {
-        if(this->storage[row-1][i] != NO_TILE && this->storage[row-1][i] != tile) {
+        if(this->storage[row][i] != NO_TILE && this->storage[row][i] != tile) {
             return -1;
         }
         else {
-            if(this->storage[row-1][i] == tile) {
+            if(this->storage[row][i] == tile) {
                 ++count;
             }
         }
@@ -69,7 +69,7 @@ void Player::setStorage(int row, LinkedList* toInsert) {
     }
 }
 void Player::printStorageLine(int row) {
-    for(int i = 0;i < row + 1;++i) {
+    for(int i = row;i >= 0;--i) {
         std::cout << this->storage[row][i];        
     }   
 }

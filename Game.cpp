@@ -84,7 +84,7 @@ bool Game::turn(Player* p) {
     if(key == "turn") {
         if(factoryRow < 6 && factoryRow > 0) {
             for(int i = 0;i<4;++i) {
-                if(this->factories[factoryRow-1][i] == tile && row > i) {
+                if(this->factories[factoryRow-1][i] == tile && (row - p->countStorage(row,tile)) > i) {
                     found->addFront(factories[factoryRow-1][i]);
                 }
                 else if (this->factories[factoryRow-1][i] == tile) {
@@ -108,14 +108,18 @@ bool Game::turn(Player* p) {
                 p->addToBroken('F');
                 this->pile->removeFront();
             }
-            for(int i = 0;i < this->pile->size();++i) {
-                if(this->pile->get(i) == tile && row > i) {
-                    found->addFront(this->pile->get(i));
-                    this->pile->removeNodeAtIndex(i);
+            int counter = 0;
+            for(int i = 0;i - counter < this->pile->size();++i) {
+                int adjustedCount = i - counter;
+                if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > adjustedCount) {
+                    found->addFront(this->pile->get(adjustedCount));
+                    this->pile->removeNodeAtIndex(adjustedCount);
+                    counter++;
                 }
-                else if(this->pile->get(i) == tile) {
-                    p->addToBroken(this->pile->get(i));
-                    this->pile->removeNodeAtIndex(i);
+                else if(this->pile->get(adjustedCount) == tile) {
+                    p->addToBroken(this->pile->get(adjustedCount));
+                    this->pile->removeNodeAtIndex(adjustedCount);
+                    counter++;
                 }
             }
             if(found->size() == 0) {
