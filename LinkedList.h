@@ -23,6 +23,7 @@ class LinkedList {
         void removeFront();
 
         void clear();
+        void removeNodeAtIndex(int index);
 
     private:
         Node* head;

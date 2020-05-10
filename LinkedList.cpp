@@ -51,6 +51,9 @@ bool LinkedList::get(int index, char& returnValue)  {
    bool error = true;
    int count = 0;
    Node* current = head;
+   if(&(this->head) == nullptr) {
+       return error;
+   }
    if (index >= 0 && index < size()) {
       while(count < index) {
          ++count;
@@ -111,4 +114,18 @@ void LinkedList::clear() {
     }
 }
 
+void LinkedList::removeNodeAtIndex(int index) {
+    Node* current = this->head;
+    if(index > 0) {
+        for(int i = 0;i < index - 1;++i) {
+            current = current->next; 
+        }
+        Node* temp = current->next;
+        current->next = temp->next;
+        temp = nullptr;
+    }
+    else {
+        this->removeFront();
+    }
+}
 

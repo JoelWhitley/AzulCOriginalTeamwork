@@ -11,6 +11,7 @@ class Game {
         bool turn(Player* p);
         void printFactories();
         void switchPlayer(Player* current);
+        bool checkRoundEnd();
     private:
         Player* p1;
         Player* p2;

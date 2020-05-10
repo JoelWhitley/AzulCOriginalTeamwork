@@ -32,15 +32,20 @@ void Game::play() {
     }
 
     //print mosaic for the player whos turn it is
-    printMosaic(this->currentPlayer);
-    if(turn(this->currentPlayer)) {
-        std::cout << "success" << std::endl;
+    bool roundEnd = false;
+    while(!roundEnd) { 
+        printMosaic(this->currentPlayer);
+        if(turn(this->currentPlayer)) {
+            std::cout << "success" << std::endl;
+        }
+        else { 
+            std::cout << "fail" << std::endl;
+        }
+        printMosaic(this->currentPlayer);
+        std::cout << std::endl;
+        switchPlayer(this->currentPlayer);
+        printFactories();
     }
-    else { 
-        std::cout << "fail" << std::endl;
-    }
-    printMosaic(this->currentPlayer);
-    printFactories();
 
 }
 
@@ -77,7 +82,7 @@ bool Game::turn(Player* p) {
     }
     
     if(key == "turn") {
-        if(factoryRow < 6 && factoryRow >= 0) {
+        if(factoryRow < 6 && factoryRow > 0) {
             for(int i = 0;i<4;++i) {
                 if(this->factories[factoryRow-1][i] == tile && row > i) {
                     found->addFront(factories[factoryRow-1][i]);
@@ -89,6 +94,29 @@ bool Game::turn(Player* p) {
                     this->pile->addBack(this->factories[factoryRow-1][i]);
                 }
                 this->factories[factoryRow-1][i] = ' ';
+            }
+            if(found->size() == 0) {
+                return false;
+            }
+            else {
+                p->setStorage(row,found);
+                return true;
+            }
+        }
+        else if(factoryRow == 0) {
+            if(this->pile->get(0) == 'F') {
+                p->addToBroken('F');
+                this->pile->removeFront();
+            }
+            for(int i = 0;i < this->pile->size();++i) {
+                if(this->pile->get(i) == tile && row > i) {
+                    found->addFront(this->pile->get(i));
+                    this->pile->removeNodeAtIndex(i);
+                }
+                else if(this->pile->get(i) == tile) {
+                    p->addToBroken(this->pile->get(i));
+                    this->pile->removeNodeAtIndex(i);
+                }
             }
             if(found->size() == 0) {
                 return false;
@@ -124,4 +152,15 @@ void Game::switchPlayer(Player* current) {
     else {
         this->currentPlayer = p1;
     }
+}
+bool Game::checkRoundEnd() {
+    if(this->pile->get(0)) {
+        return true;
+    }
+    for(int i =0;i < 5;++i) {
+        if(this->factories[i][0] == ' ') {
+            return true;
+        }
+    }
+    return false;
 }
