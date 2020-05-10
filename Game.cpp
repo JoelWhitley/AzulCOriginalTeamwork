@@ -88,6 +88,7 @@ bool Game::turn(Player* p) {
                 else {
                     this->pile->addBack(this->factories[factoryRow-1][i]);
                 }
+                this->factories[factoryRow-1][i] = ' ';
             }
             if(found->size() == 0) {
                 return false;
