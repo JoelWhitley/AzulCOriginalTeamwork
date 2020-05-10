@@ -42,11 +42,11 @@ void Player::populateStorages() {
 int Player::countStorage(int row,char tile) {
     int count = 0;
     for(int i = 0;i < row;++i) {
-        if(this->storage[row][i] != NO_TILE && this->storage[row][i] != tile) {
+        if(this->storage[row-1][i] != NO_TILE && this->storage[row-1][i] != tile) {
             return -1;
         }
         else {
-            if(this->storage[row][i] == tile) {
+            if(this->storage[row-1][i] == tile) {
                 ++count;
             }
         }

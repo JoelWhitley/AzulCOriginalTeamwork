@@ -46,6 +46,7 @@ void Game::play() {
         switchPlayer(this->currentPlayer);
         printFactories();
     }
+    std::cout << "end of round" << std::endl;
 
 }
 
@@ -84,7 +85,7 @@ bool Game::turn(Player* p) {
     if(key == "turn") {
         if(factoryRow < 6 && factoryRow > 0) {
             for(int i = 0;i<4;++i) {
-                if(this->factories[factoryRow-1][i] == tile && (row - p->countStorage(row,tile)) > i) {
+                if(this->factories[factoryRow-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
                     found->addFront(factories[factoryRow-1][i]);
                 }
                 else if (this->factories[factoryRow-1][i] == tile) {
@@ -111,7 +112,7 @@ bool Game::turn(Player* p) {
             int counter = 0;
             for(int i = 0;i - counter < this->pile->size();++i) {
                 int adjustedCount = i - counter;
-                if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > adjustedCount) {
+                if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
                     found->addFront(this->pile->get(adjustedCount));
                     this->pile->removeNodeAtIndex(adjustedCount);
                     counter++;
@@ -158,13 +159,13 @@ void Game::switchPlayer(Player* current) {
     }
 }
 bool Game::checkRoundEnd() {
-    if(this->pile->get(0)) {
-        return true;
+    if(this->pile->size() > 0) {
+        return false;
     }
     for(int i =0;i < 5;++i) {
-        if(this->factories[i][0] == ' ') {
-            return true;
+        if(!(this->factories[i][0] == ' ')) {
+            return false;
         }
     }
-    return false;
+    return true;
 }
