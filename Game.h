@@ -9,8 +9,12 @@ class Game {
         void play();
         void printMosaic(Player* p);
         bool turn(Player* p);
+        void printFactories();
+        void switchPlayer(Player* current);
     private:
-        Player p1;
-        Player p2;
+        Player* p1;
+        Player* p2;
+        Player* currentPlayer;
         char factories[5][4];
+        LinkedList* pile;
 };

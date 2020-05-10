@@ -73,7 +73,7 @@ void LinkedList::addFront(char value) {
 
 void LinkedList::addBack(char value) {
    Node* toAdd = new Node(value, nullptr);
-   if (this->head == nullptr) {
+   if (&(this->head) == nullptr) {
       this->head = toAdd;
    } else {
       Node* current = this->head;

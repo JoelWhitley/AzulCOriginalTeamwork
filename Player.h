@@ -21,6 +21,7 @@ public:
    void printStorageLine(int row);
    void printMosaicLine(int row);
    void addToBroken(char tile);
+   bool moveToMosaic(char tile,int row);
    LinkedList* getBroken();
    
 
