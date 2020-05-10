@@ -31,21 +31,21 @@ void mainMenu() {
     std::cout << "(3): Exit without Saving" << std::endl;
 	std::cin >> choice;
     	
-	switch(choice)
-	{
-	case 1:
+	
+	
+	if(choice == 1) {
         newGame();
-        break;    
-    case 2:
+        running = false;
+    }  
+    else if(choice == 2) {
 		printCredits();
-		break;
-    case 3:
+    }
+    else if(choice == 3) {
         running = false;
         std::cout << "Goodbye." << std::endl;
-        break;
-	default:
-		std::cout << "Invalid choice." << std::endl;
-		break;
+    }
+	else {
+		std::cout << "Invalid choice." << std::endl;	
 	}
 
     return;

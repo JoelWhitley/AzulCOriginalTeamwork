@@ -45,6 +45,7 @@ void Game::play() {
         std::cout << std::endl;
         switchPlayer(this->currentPlayer);
         printFactories();
+        roundEnd = checkRoundEnd();
     }
     std::cout << "end of round" << std::endl;
 
