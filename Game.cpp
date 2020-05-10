@@ -58,6 +58,12 @@ void Game::printMosaic(Player* p) {
         p->printMosaicLine(i);
         std::cout << std::endl;
     }
+    std::cout << "Broken: ";
+    for(int i =0;i < p->getBroken()->size();++i) {
+        std::cout << p->getBroken()->get(i) << " ";
+    }
+    std::cout << std::endl;
+
     
 }
 bool Game::turn(Player* p) {
@@ -75,8 +81,11 @@ bool Game::turn(Player* p) {
     if(key == "turn") {
         if(factoryRow < 6 && factoryRow >= 0) {
             for(int i = 0;i<4;++i) {
-                if(this->factories[factoryRow-1][i] == tile) {
+                if(this->factories[factoryRow-1][i] == tile && row > i) {
                     found->addFront(factories[factoryRow-1][i]);
+                }
+                else {
+                    p->addToBroken(this->factories[factoryRow-1][i]);
                 }
             }
             if(found->size() == 0) {

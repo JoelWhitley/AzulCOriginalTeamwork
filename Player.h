@@ -20,6 +20,9 @@ public:
    void populateStorages();
    void printStorageLine(int row);
    void printMosaicLine(int row);
+   void addToBroken(char tile);
+   LinkedList* getBroken();
+   
 
 private:
 
@@ -27,6 +30,8 @@ private:
     int points;
     char** storage = new char*[5];
     char mosaic[5][5];
+    LinkedList* broken;
+    
 
 };
 

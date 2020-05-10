@@ -4,6 +4,7 @@
 Player::Player(std::string name)
    : name(name), points(0) {
        populateStorages();
+       this->broken = new LinkedList();
 }
 
 
@@ -62,7 +63,7 @@ void Player::setStorage(int row, LinkedList* toInsert) {
             ++count;
         }
         else {
-            //add to broken tiles
+            this->broken->addFront(tile);
             ++count;
         }
     }
@@ -76,4 +77,10 @@ void Player::printMosaicLine(int row) {
     for(int i = 0;i < 5;++i) {
         std::cout << this->mosaic[row][i];
     }
+}
+void Player::addToBroken(char tile) {
+    this->broken->addFront(tile);
+}
+LinkedList* Player::getBroken() {
+    return this->broken;
 }
