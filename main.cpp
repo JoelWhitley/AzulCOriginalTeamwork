@@ -106,7 +106,7 @@ void loadGame(){
     else //So if the file was found
     {
         std::cout << "AZUL game successfully loaded\n\n";
-        //Read the board, player names, hands, scores, board spaces left
+        //Should read in the player name , score , board and empty spaces.
         //The values in here are all examples
         player1Name = "";
         player1Score = 0;
