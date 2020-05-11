@@ -12,6 +12,7 @@ std::string player1Name;
 std::string player2Name;
 int player1Score;
 int player2Score;
+std::string nextTurn;
 
 int main() {
 
@@ -106,14 +107,13 @@ void loadGame(){
     else //So if the file was found
     {
         std::cout << "AZUL game successfully loaded\n\n";
-        //Should read in the player name , score , board and empty spaces.
+        //Should read in the player name , score , board and empty spaces in the factories.
         //The values in here are all examples
         player1Name = "";
-        player1Score = 0;
-      
-        //Example values too, really they'd be reading lines from the file
-        player2Name = "";
-        player2Score = 0;
+       	player2Name = "";
+	player1Score = 0;
+	player2Score = 0;
+	nextTurn = "";
 
         file.close();
         return;
