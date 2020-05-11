@@ -6,6 +6,7 @@
 void mainMenu();
 void newGame();
 void printCredits();
+void loadGame();
 
 bool running;
 std::string player1Name;
