@@ -84,3 +84,22 @@ void Player::addToBroken(char tile) {
 LinkedList* Player::getBroken() {
     return this->broken;
 }
+char Player::getTile(int row) {
+    return storage[row][row];
+}
+void Player::clearStorageRow(int row) {
+    for(int i = 0;i<row +1;++i) {
+        this->storage[row][i] = NO_TILE;
+    }
+}
+int Player::moveToMosaic(int row,char tile) {
+    char originalLine[] = {'B','Y','R','U','L'};
+    int lineIndex = 0;
+    for(int i = 0;i<5;++i) {
+        if(tile == originalLine[i]) {
+            lineIndex = i - 1;
+        }
+    }
+    lineIndex = (lineIndex + row) % 5;
+    this->mosaic[row - 1][lineIndex] = tile;
+}

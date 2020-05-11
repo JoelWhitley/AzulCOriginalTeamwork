@@ -20,20 +20,17 @@ public:
    void populateStorages();
    void printStorageLine(int row);
    void printMosaicLine(int row);
-   void addToBroken(char tile);
-   bool moveToMosaic(char tile,int row);
+   void addToBroken(char tile); 
+   char getTile(int row);
+   int moveToMosaic(int row,char tile);
+   void clearStorageRow(int row);
    LinkedList* getBroken();
-   
-
 private:
-
     std::string name;
     int points;
     char** storage = new char*[5];
     char mosaic[5][5];
     LinkedList* broken;
-    
-
 };
 
 #endif // AZUL_PLAYER

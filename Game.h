@@ -12,6 +12,7 @@ class Game {
         void printFactories();
         void switchPlayer(Player* current);
         bool checkRoundEnd();
+        void moveTiles(Player* p);
     private:
         Player* p1;
         Player* p2;

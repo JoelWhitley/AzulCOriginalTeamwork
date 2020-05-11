@@ -47,6 +47,10 @@ void Game::play() {
         printFactories();
         roundEnd = checkRoundEnd();
     }
+    moveTiles(p1);
+    moveTiles(p2);
+    printMosaic(p1);
+    printMosaic(p2);
     std::cout << "end of round" << std::endl;
 
 }
@@ -169,4 +173,15 @@ bool Game::checkRoundEnd() {
         }
     }
     return true;
+}
+void Game::moveTiles(Player* p) {
+    int coloumn = 0;
+    for(int row = 0;row < 5;++row) {
+        char tile = p->getTile(row);
+        if(p->countStorage(row + 1,tile) == row+1 && tile != NO_TILE) {
+            coloumn = p->moveToMosaic(row + 1,tile);
+            // put scoring methods here
+            p->clearStorageRow(row);
+        }
+    }
 }
