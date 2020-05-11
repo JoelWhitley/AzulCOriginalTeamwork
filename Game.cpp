@@ -1,7 +1,6 @@
 #include "Game.h"
 #include <string>
 #include <iostream>
-#include <fstream>
 
 Game::Game(Player* p1, Player* p2) {
     this->p1 = p1;
@@ -46,7 +45,9 @@ void Game::play() {
         std::cout << std::endl;
         switchPlayer(this->currentPlayer);
         printFactories();
+        roundEnd = checkRoundEnd();
     }
+    std::cout << "end of round" << std::endl;
 
 }
 
@@ -85,7 +86,7 @@ bool Game::turn(Player* p) {
     if(key == "turn") {
         if(factoryRow < 6 && factoryRow > 0) {
             for(int i = 0;i<4;++i) {
-                if(this->factories[factoryRow-1][i] == tile && (row - p->countStorage(row,tile)) > i) {
+                if(this->factories[factoryRow-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
                     found->addFront(factories[factoryRow-1][i]);
                 }
                 else if (this->factories[factoryRow-1][i] == tile) {
@@ -112,7 +113,7 @@ bool Game::turn(Player* p) {
             int counter = 0;
             for(int i = 0;i - counter < this->pile->size();++i) {
                 int adjustedCount = i - counter;
-                if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > adjustedCount) {
+                if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
                     found->addFront(this->pile->get(adjustedCount));
                     this->pile->removeNodeAtIndex(adjustedCount);
                     counter++;
@@ -159,24 +160,13 @@ void Game::switchPlayer(Player* current) {
     }
 }
 bool Game::checkRoundEnd() {
-    if(this->pile->get(0)) {
-        return true;
+    if(this->pile->size() > 0) {
+        return false;
     }
     for(int i =0;i < 5;++i) {
-        if(this->factories[i][0] == ' ') {
-            return true;
+        if(!(this->factories[i][0] == ' ')) {
+            return false;
         }
     }
-    return false;
-}
-void Game::saveGame(){
-    std::string filename;
-    std::cout << "\nEnter a name for the save file:\n";
-    std::cin >> filename;
-    std::ofstream file;
-    file.open(filename);
-    //Enter the data to the file here
-    file << "Some data\nSome more data\nEven more data";
-    std::cout << "\n\nGame successfully saved\n> ";
-    file.close();
+    return true;
 }

@@ -3,7 +3,7 @@
 #include <fstream>
 
 #include "Player.h"
-// #include "Game.h"
+#include "Game.h"
 
 void mainMenu();
 void newGame();
@@ -41,23 +41,19 @@ void mainMenu() {
     std::cout << "(3): Exit without Saving" << std::endl;
 	std::cin >> choice;
     	
-	switch(choice)
-	{
-	case 1:
+	if(choice == 1) {
         newGame();
-        break;
-    case 2:
-        loadGame();
-    case 3:
+        running = false;
+    }  
+    else if(choice == 2) {
 		printCredits();
-		break;
-    case 4:
+    }
+    else if(choice == 3) {
         running = false;
         std::cout << "Goodbye." << std::endl;
-        break;
-	default:
-		std::cout << "Invalid choice." << std::endl;
-		break;
+    }
+	else {
+		std::cout << "Invalid choice." << std::endl;	
 	}
 
     return;
@@ -78,9 +74,9 @@ void newGame() {
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
-    // Game* game = new Game(player1, player2);
+    Game* game = new Game(player1, player2);
     std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
-    // game->play();
+    game->play();
     
 }
 
@@ -95,56 +91,4 @@ void printCredits() {
 
     return;
 
-}
-
-void loadGame(){
-    std::string filename;
-    std::cout << "Enter the filename from which to load a game\n> ";
-    std::cin >> filename;
-    // std::ifstream file;
-    std::ifstream file (filename, std::ifstream::in);
-    file.open("/" + filename);
-    if(!file)
-    {
-        std::cout << "File does not exist";
-        return;
-    }
-    else //So if the file was found
-    {
-
-        //Should read in the player name , score , board and empty spaces in the factories.
-        //The values in here are all examples
-        player1Name = "";
-       	player2Name = "";
-
-	    player1Score = 0;
-	    player2Score = 0;
-	    nextTurn = "";
-
-        //line 1 = player 1 name
-        std::getline(file, player1Name);
-        //line 2 = player 2 name
-        std::getline(file, player2Name);
-        //line 3 = player 1 score
-        std::getline(file, player1ScoreString);
-        //line 4 = player 2 score
-        std::getline(file, player2ScoreString);
-        //line 5 = next turn player name
-        std::getline(file, nextTurn);
-        //line 6 = dump pile
-        
-
-        // while (std::getline(file).good()){
-        // for (){
-            // std::getline(file, target);
-        // }
-    
-        file.close(); 
-        std::cout << "AZUL game successfully loaded\n\n";
-        return;
-
-    }
-
-    file.close();
-    return;
 }
