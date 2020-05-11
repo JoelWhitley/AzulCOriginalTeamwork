@@ -1,12 +1,17 @@
 #include <iostream>
 #include <string>
 #include "Player.h"
+#include "Game.h"
 
 void mainMenu();
 void newGame();
 void printCredits();
 
 bool running;
+std::string player1Name;
+std::string player2Name;
+int player1Score;
+int player2Score;
 
 int main() {
 
@@ -34,11 +39,13 @@ void mainMenu() {
 	{
 	case 1:
         newGame();
-        break;    
+        break;
     case 2:
+        loadGame();
+    case 3:
 		printCredits();
 		break;
-    case 3:
+    case 4:
         running = false;
         std::cout << "Goodbye." << std::endl;
         break;
@@ -65,9 +72,9 @@ void newGame() {
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
-    // game = new Game(player1, player2);
+    Game* game = new Game(player1, player2);
     std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
-    // game->play();
+    game->play();
     
 }
 
@@ -82,4 +89,36 @@ void printCredits() {
 
     return;
 
+}
+
+void loadGame(){
+    std::string filename;
+    std::cout << "Enter the filename from which to load a game\n> ";
+    std::cin >> filename;
+    std::ifstream file;
+    file.open(filename);
+    if(!file)
+    {
+        std::cout << "File does not exist";
+        menu();
+        return;
+    }
+    else //So if the file was found
+    {
+        std::cout << "AZUL game successfully loaded\n\n";
+        //Read the board, player names, hands, scores, board spaces left
+        //The values in here are all examples
+        player1Name = "";
+        player1Score = 0;
+      
+        //Example values too, really they'd be reading lines from the file
+        player2Name = "";
+        player2Score = 0;
+
+        file.close();
+        return;
+    }
+    file.close();
+    menu();
+    return;
 }
