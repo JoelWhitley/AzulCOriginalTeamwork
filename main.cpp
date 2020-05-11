@@ -1,7 +1,9 @@
 #include <iostream>
 #include <string>
+#include <fstream>
+
 #include "Player.h"
-#include "Game.h"
+// #include "Game.h"
 
 void mainMenu();
 void newGame();
@@ -13,6 +15,8 @@ std::string player1Name;
 std::string player2Name;
 int player1Score;
 int player2Score;
+std::string player1ScoreString = "";
+std::string player2ScoreString = "";
 std::string nextTurn;
 
 int main() {
@@ -74,9 +78,9 @@ void newGame() {
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
-    Game* game = new Game(player1, player2);
+    // Game* game = new Game(player1, player2);
     std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
-    game->play();
+    // game->play();
     
 }
 
@@ -97,29 +101,50 @@ void loadGame(){
     std::string filename;
     std::cout << "Enter the filename from which to load a game\n> ";
     std::cin >> filename;
-    std::ifstream file;
-    file.open(filename);
+    // std::ifstream file;
+    std::ifstream file (filename, std::ifstream::in);
+    file.open("/" + filename);
     if(!file)
     {
         std::cout << "File does not exist";
-        menu();
         return;
     }
     else //So if the file was found
     {
-        std::cout << "AZUL game successfully loaded\n\n";
+
         //Should read in the player name , score , board and empty spaces in the factories.
         //The values in here are all examples
         player1Name = "";
        	player2Name = "";
-	player1Score = 0;
-	player2Score = 0;
-	nextTurn = "";
 
-        file.close();
+	    player1Score = 0;
+	    player2Score = 0;
+	    nextTurn = "";
+
+        //line 1 = player 1 name
+        std::getline(file, player1Name);
+        //line 2 = player 2 name
+        std::getline(file, player2Name);
+        //line 3 = player 1 score
+        std::getline(file, player1ScoreString);
+        //line 4 = player 2 score
+        std::getline(file, player2ScoreString);
+        //line 5 = next turn player name
+        std::getline(file, nextTurn);
+        //line 6 = dump pile
+        
+
+        // while (std::getline(file).good()){
+        // for (){
+            // std::getline(file, target);
+        // }
+    
+        file.close(); 
+        std::cout << "AZUL game successfully loaded\n\n";
         return;
+
     }
+
     file.close();
-    menu();
     return;
 }
