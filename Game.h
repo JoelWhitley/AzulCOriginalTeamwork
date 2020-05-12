@@ -3,19 +3,28 @@
 
 class Game {
     public:
+    
         Game(Player* p1, Player* p2);
         ~Game();
-        char factoryGeneration();
+        void setup();
+        void generateFactories();
+        Tile randomTile();
+
         void play();
-        void printMosaic(Player* p);
+        void round();
         bool turn(Player* p);
+
+        void printMosaic(Player* p);
         void printFactories();
         void switchPlayer(Player* current);
         bool checkRoundEnd();
+        void storageToMosaic();
+
     private:
+
         Player* p1;
         Player* p2;
         Player* currentPlayer;
-        char factories[5][4];
+        Tile factories[5][4];
         LinkedList* pile;
 };

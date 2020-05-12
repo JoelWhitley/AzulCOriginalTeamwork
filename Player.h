@@ -15,25 +15,24 @@ public:
    std::string getName();
    int getPoints();
    void addPoints(int points);
-   int countStorage(int row,char tile);
+   int countStorage(int row, Tile tile);
    void setStorage(int row, LinkedList* toInsert);
    void populateStorages();
    void printStorageLine(int row);
    void printMosaicLine(int row);
-   void addToBroken(char tile);
-   bool moveToMosaic(char tile,int row);
-   LinkedList* getBroken();
-   
+   int calcScore(int row, int col);
+   void addToBroken(Tile tile);
+   bool moveToMosaic(Tile tile, int row);
+   LinkedList* getBroken(); 
 
 private:
 
     std::string name;
     int points;
-    char** storage = new char*[5];
-    char mosaic[5][5];
+    Tile** storage = new Tile*[5];
+    Tile mosaic[5][5];
     LinkedList* broken;
     
-
 };
 
 #endif // AZUL_PLAYER

@@ -40,7 +40,7 @@ void mainMenu() {
     std::cout << "(2): Credits" << std::endl;
     std::cout << "(3): Exit without Saving" << std::endl;
 	std::cin >> choice;
-    	
+    	  
 	if(choice == 1) {
         newGame();
         running = false;
@@ -64,7 +64,7 @@ void newGame() {
 
     std::string player1name;
     std::string player2name;
-    // Game game;
+    Game* game;
 
     std::cout << "Enter a name for Player 1:" << std::endl;
     std::cin >> player1name;
@@ -74,7 +74,7 @@ void newGame() {
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
-    Game* game = new Game(player1, player2);
+    game = new Game(player1, player2);
     std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
     game->play();
     
