@@ -33,18 +33,17 @@ void Game::play() {
 
     //print mosaic for the player whos turn it is
     bool roundEnd = false;
-    while(!roundEnd) { 
-        printMosaic(this->currentPlayer);
+    printMosaic(this->currentPlayer);
+    while(!roundEnd) {       
         if(turn(this->currentPlayer)) {
             std::cout << "success" << std::endl;
+            switchPlayer(this->currentPlayer);
         }
         else { 
-            std::cout << "fail" << std::endl;
-        }
-        printMosaic(this->currentPlayer);
-        std::cout << std::endl;
-        switchPlayer(this->currentPlayer);
+            std::cout << "Fail, please try again" << std::endl;
+        }    
         printFactories();
+        printMosaic(this->currentPlayer); 
         roundEnd = checkRoundEnd();
     }
     moveTiles(p1);
@@ -86,7 +85,9 @@ bool Game::turn(Player* p) {
     if(p->countStorage(row,tile) < 0) {
         return false;
     }
-    
+    if(tile == 'F') {
+        return false;
+    }
     if(key == "turn") {
         if(factoryRow < 6 && factoryRow > 0) {
             for(int i = 0;i<4;++i) {
