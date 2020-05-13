@@ -83,9 +83,7 @@ bool Game::turn(Player* p) {
     std::cin >> key >> factoryRow >> tile >> row;
     LinkedList* found = new LinkedList();
     bool failCondition = false;
-    if(p->countStorage(row,tile) < 0) {
-        return false;
-    }
+    
     if(tile == 'F') {
         return false;
     }
@@ -98,52 +96,57 @@ bool Game::turn(Player* p) {
         return failCondition;
     }
     if(key == "turn") {
-        if(factoryRow < 6 && factoryRow > 0) {
-            for(int i = 0;i<4;++i) {
-                if(this->factories[factoryRow-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
-                    found->addFront(factories[factoryRow-1][i]);
+        if(row < 6 && row >= 0) {
+            if(p->countStorage(row,tile) < 0) {
+                return false;
+            }
+            if(factoryRow < 6 && factoryRow > 0) {
+                for(int i = 0;i<4;++i) {
+                    if(this->factories[factoryRow-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
+                        found->addFront(factories[factoryRow-1][i]);
+                    }
+                    else if (this->factories[factoryRow-1][i] == tile) {
+                        p->addToBroken(this->factories[factoryRow-1][i]);
+                    }
+                    else {
+                        this->pile->addBack(this->factories[factoryRow-1][i]);
+                    }
+                    this->factories[factoryRow-1][i] = ' ';
                 }
-                else if (this->factories[factoryRow-1][i] == tile) {
-                    p->addToBroken(this->factories[factoryRow-1][i]);
+                if(found->size() == 0) {
+                    return false;
                 }
                 else {
-                    this->pile->addBack(this->factories[factoryRow-1][i]);
-                }
-                this->factories[factoryRow-1][i] = ' ';
-            }
-            if(found->size() == 0) {
-                return false;
-            }
-            else {
-                p->setStorage(row,found);
-                return true;
-            }
-        }
-        else if(factoryRow == 0) {
-            if(this->pile->get(0) == 'F') {
-                p->addToBroken('F');
-                this->pile->removeFront();
-            }
-            int counter = 0;
-            for(int i = 0;i - counter < this->pile->size();++i) {
-                int adjustedCount = i - counter;
-                if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
-                    found->addFront(this->pile->get(adjustedCount));
-                    this->pile->removeNodeAtIndex(adjustedCount);
-                    counter++;
-                }
-                else if(this->pile->get(adjustedCount) == tile) {
-                    p->addToBroken(this->pile->get(adjustedCount));
-                    this->pile->removeNodeAtIndex(adjustedCount);
-                    counter++;
+                    p->setStorage(row,found);
+                    return true;
                 }
             }
-            if(found->size() == 0) {
-                return false;
-            }
-            else {
-                p->setStorage(row,found);
-                return true;
+            else if(factoryRow == 0) {
+                if(this->pile->get(0) == 'F') {
+                    p->addToBroken('F');
+                    this->pile->removeFront();
+                }
+                int counter = 0;
+                for(int i = 0;i - counter < this->pile->size();++i) {
+                    int adjustedCount = i - counter;
+                    if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
+                        found->addFront(this->pile->get(adjustedCount));
+                        this->pile->removeNodeAtIndex(adjustedCount);
+                        counter++;
+                    }
+                    else if(this->pile->get(adjustedCount) == tile) {
+                        p->addToBroken(this->pile->get(adjustedCount));
+                        this->pile->removeNodeAtIndex(adjustedCount);
+                        counter++;
+                    }
+                }
+                if(found->size() == 0) {
+                    return false;
+                }
+                else {
+                    p->setStorage(row,found);
+                    return true;
+                }
             }
         }
     }
