@@ -2,6 +2,7 @@
 #define AZUL_TYPES
 
 // Game sizes and counts
+//size determines rows/cols of mosaic, rows of storage, and amount of tile types
 #define SIZE           5
 #define FACTORIES      5
 #define FACTORY_SIZE   4

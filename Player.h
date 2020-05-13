@@ -24,13 +24,13 @@ public:
    void addToBroken(Tile tile);
    bool moveToMosaic(Tile tile, int row);
    LinkedList* getBroken(); 
-
+   
 private:
 
     std::string name;
     int points;
-    Tile** storage = new Tile*[5];
-    Tile mosaic[5][5];
+    Tile** storage = new Tile*[SIZE];
+    Tile mosaic[SIZE][SIZE];
     LinkedList* broken;
     
 };
