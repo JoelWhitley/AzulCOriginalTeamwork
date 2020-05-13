@@ -1,4 +1,5 @@
 #include "Game.h"
+
 #include <string>
 #include <iostream>
 
@@ -16,6 +17,7 @@ void Game::setup() {
     pile->addFront(FIRST_PLAYER);
     this->currentPlayer = p1;
     generateFactories();
+    roundNumber = 1;
 }
 
 void Game::generateFactories() {
@@ -27,7 +29,7 @@ void Game::generateFactories() {
 }
 
 Tile Game::randomTile() {
-    Tile tileSelection[5] = {RED,YELLOW,BLUE,LIGHT_BLUE,BLACK};
+    
     int ran = rand() % 5;
     return tileSelection[ran];
 }
@@ -49,102 +51,121 @@ void Game::round() {
 
     bool roundEnd = false;
     while(!roundEnd) { 
+        
+        printFactories();
         //print mosaic for the player whos turn it is
         printMosaic(this->currentPlayer);
         if(turn(this->currentPlayer)) {
-            std::cout << "success" << std::endl;
+            std::cout << "Success! " << currentPlayer->getName() << "'s new board:"<< std::endl;
+            printMosaic(this->currentPlayer); 
             switchPlayer(this->currentPlayer);
         }
         else { 
-            std::cout << "Fail, please try again" << std::endl;
+            std::cout << "Fail, please try again." << std::endl;
         }    
-        printFactories();
-        printMosaic(this->currentPlayer); 
         roundEnd = checkRoundEnd();
     }
-    std::cout << "end of round" << std::endl;
+    std::cout << "---END OF ROUND " << roundNumber << "---" << std::endl;
+    std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
+    moveTiles(p1); 
+    std::cout << "---END OF ROUND " << roundNumber << "---" << std::endl;
+    std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
+    moveTiles(p2);
+    printMosaic(p1);
+    printMosaic(p2);
+    roundNumber++;
+    std::cout << "---STARTING ROUND " << roundNumber << "---" << std::endl;
 
 }
 
 bool Game::turn(Player* p) {
+    //TODO: prevent adding tiles to storage when that type of tile already exists in that row of the mosaic
 
-    bool output = true;
     std::string key;
-    int factoryRow;
+    int factory;
     Tile tile;
     int row;
     LinkedList* found = new LinkedList();
     
     std::cout << "it is " << p->getName() << "'s turn: " << std::endl;
     //take input string, split into args
-    std::cin >> key >> factoryRow >> tile >> row;
+    std::cin >> key >> factory >> tile >> row;
     //for case insensitivity during comparison
     tile = toupper(tile);
+
+    bool isValid = false;
     
-    if(p->countStorage(row,tile) < 0) {
-        output = false;
-    } else { 
-        if(key == "turn" || key == "TURN") {
-            //if specified factory is standard (not pile)
-            if(factoryRow>0 && factoryRow<=FACTORIES) {
-                //add specified tiles to temporary "found" place before storage, others to pile
-                for(int i=0; i<FACTORY_SIZE; ++i) {
-                    if(this->factories[factoryRow-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
-                        found->addFront(factories[factoryRow-1][i]);
+    if(key=="exit" || key=="EXIT"){
+        //back to menu, save, or something
+    }    
+    else if(key=="turn" || key=="TURN"){
+        
+        //amount of specified tile in specified factory
+        int matchingTiles = matchingTilesInFactory(factory, tile);
+
+        if((matchingTiles>0) && (tile!=FIRST_PLAYER) && (p->countStorage(row,tile) >= 0)){ 
+            //if specified factory is orbiting/standard (not pile)
+            if((factory>0) && (factory<=FACTORIES)){
+                for(int i=0; i<FACTORY_SIZE; ++i){
+                    //add specified tiles to temporary "found" place before storage, if there's room in storage row
+                    if(this->factories[factory-1][i] == tile){
+                        found->addFront(factories[factory-1][i]);
                     }
-                    //if specified storage row is full, overflow into broken tiles (floor)
-                    else if (this->factories[factoryRow-1][i] == tile) {
-                        p->addToBroken(this->factories[factoryRow-1][i]);
-                    }
+                    //add others to pile
                     else {
-                        this->pile->addBack(this->factories[factoryRow-1][i]);
+                        this->pile->addBack(this->factories[factory-1][i]);
                     }
-                    this->factories[factoryRow-1][i] = NO_TILE;
+                    this->factories[factory-1][i] = NO_TILE;
                 }
-                if(found->size() == 0) {
-                    output = false;
-                } else {
-                    //I think setStorage should be addToStorage instead - you can add tiles to non-empty storages, would be impossible to fill lower storages otherwise
-                    p->setStorage(row,found);
-                    output = true;
-                }
+                //add matching "found" tiles to specified storage row
+                p->setStorage(row,found);
+                isValid = true;
             }
-            //if middle pile factory is chosen
-            else if(factoryRow == 0) {
-                if(this->pile->get(0) == FIRST_PLAYER) {
+            //if specified factory is middle pile
+            else if(factory == 0){
+                //move first_player tile to player's floor (if it's there)
+                if(this->pile->get(0) == FIRST_PLAYER){
                     p->addToBroken(FIRST_PLAYER);
                     this->pile->removeFront();
                 }
-                int counter = 0;
-                for(int i=0; i - counter<this->pile->size(); ++i) {
-                    int adjustedCount = i-counter;
-                    if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
-                        found->addFront(this->pile->get(adjustedCount));
-                        this->pile->removeNodeAtIndex(adjustedCount);
-                        counter++;
-                    }
-                    else if(this->pile->get(adjustedCount) == tile) {
-                        p->addToBroken(this->pile->get(adjustedCount));
-                        this->pile->removeNodeAtIndex(adjustedCount);
-                        counter++;
+                //add specified tiles to "found"
+                for(int i=0; i < this->pile->size(); ++i){
+                     if(this->pile->get(i) == tile) {
+                        found->addFront(this->pile->get(i));
+                        this->pile->removeNodeAtIndex(i);
                     }
                 }
-                if(found->size() == 0) {
-                    output = false;
-                }
-                else {
-                    p->setStorage(row,found);
-                    output = true;
-                }
+                p->setStorage(row, found);
+                isValid = true;
             }
-        }     
+        }       
     }
-
-    return output;
-
+    return isValid;
 }
 
+
 //--------------END OF GAMEPLAY LOOP LOGIC-----------------
+
+int Game::matchingTilesInFactory(int factory, Tile tile){
+
+    int count = 0;
+    if(factory==0){
+        for(int i=0; i < this->pile->size(); ++i) {
+            if(this->pile->get(i) == tile){
+                count++;
+            }
+        }
+    }
+    else if((factory>0) && (factory<=FACTORIES)){
+        for(int i=0; i<FACTORY_SIZE; i++) {
+            if(factories[factory-1][i] == tile){
+                count++;
+            }
+        }
+    }
+    return count;
+
+}
 
 void Game::printFactories() {
 
@@ -178,7 +199,7 @@ void Game::printMosaic(Player* p) {
         std::cout << std::endl;
     }
     std::cout << "Broken: ";
-    for(int i =0;i < p->getBroken()->size();++i) {
+    for(int i=0; i < p->getBroken()->size(); ++i) {
         std::cout << p->getBroken()->get(i) << " ";
     }
     std::cout << std::endl;
@@ -202,9 +223,10 @@ bool Game::checkRoundEnd() {
 
     if(this->pile->size() > 0) {
         noTilesLeft = false;
-    } else {
-        for(int i=0; noTilesLeft && i<5; ++i) {
-            if(!(this->factories[i][0] == ' ')) {
+    } 
+    else {
+        for(int i=0; noTilesLeft && i<FACTORIES; ++i) {
+            if(!(this->factories[i][0] == NO_TILE)) {
                 noTilesLeft = false;
             }
         }
@@ -213,14 +235,29 @@ bool Game::checkRoundEnd() {
     return noTilesLeft;
 
 }
+
 void Game::moveTiles(Player* p) {
-    int coloumn = 0;
-    for(int row = 0;row < 5;++row) {
-        char tile = p->getTile(row);
-        if(p->countStorage(row + 1,tile) == row+1 && tile != NO_TILE) {
-            coloumn = p->moveToMosaic(row + 1,tile);
-            // put scoring methods here
+    for(int row=0; row<SIZE; ++row) {
+        Tile tile = p->getTile(row);
+        if(p->countStorage(row+1, tile) == row+1 && tile != NO_TILE) {
+            p->moveToMosaic(row+1, tile);
+            std::cout << "Row " << row+1 << ":" << std::endl;
+            p->addPoints(p->calcScore(row, getMosaicColumnByTile(row, tile)));
             p->clearStorageRow(row);
         }
     }
+    p->addPoints(demerits[p->getBroken()->size()]);
+}
+
+int Game::getMosaicColumnByTile(int row, Tile tile){
+    
+    int lineIndex = 0;
+    for(int i=0; i<SIZE; ++i) {
+        if(tile == topRowOrder[i]) {
+            lineIndex = i;
+        }
+    }
+    int output = (lineIndex+row) % SIZE;
+    return output;
+
 }

@@ -1,7 +1,8 @@
 #include "Player.h"
-
+#include "Rules.h"
 
 class Game {
+    
     public:
     
         Game(Player* p1, Player* p2);
@@ -20,12 +21,16 @@ class Game {
         bool checkRoundEnd();
         void storageToMosaic();
         void moveTiles(Player* p);
+        int getMosaicColumnByTile(int row, Tile tile);
+        int matchingTilesInFactory(int factory, Tile tile);
         
     private:
 
         Player* p1;
         Player* p2;
         Player* currentPlayer;
-        Tile factories[5][4];
+        Tile factories[FACTORIES][FACTORY_SIZE];
         LinkedList* pile;
+        int roundNumber;
+
 };
