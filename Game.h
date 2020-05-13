@@ -19,7 +19,8 @@ class Game {
         void switchPlayer(Player* current);
         bool checkRoundEnd();
         void storageToMosaic();
-
+        void moveTiles(Player* p);
+        
     private:
 
         Player* p1;

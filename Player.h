@@ -22,8 +22,10 @@ public:
    void printMosaicLine(int row);
    int calcScore(int row, int col);
    void addToBroken(Tile tile);
-   bool moveToMosaic(Tile tile, int row);
-   LinkedList* getBroken(); 
+   int moveToMosaic(int row,char tile);
+   void clearStorageRow(int row);
+   Tile getTile(int row);
+   LinkedList* getBroken();
    
 private:
 
@@ -32,7 +34,7 @@ private:
     Tile** storage = new Tile*[SIZE];
     Tile mosaic[SIZE][SIZE];
     LinkedList* broken;
-    
+
 };
 
 #endif // AZUL_PLAYER

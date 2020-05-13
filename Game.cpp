@@ -53,17 +53,15 @@ void Game::round() {
         printMosaic(this->currentPlayer);
         if(turn(this->currentPlayer)) {
             std::cout << "success" << std::endl;
+            switchPlayer(this->currentPlayer);
         }
         else { 
-            std::cout << "fail" << std::endl;
-        }
-        printMosaic(this->currentPlayer);
-        std::cout << std::endl;
-        switchPlayer(this->currentPlayer);
+            std::cout << "Fail, please try again" << std::endl;
+        }    
         printFactories();
+        printMosaic(this->currentPlayer); 
         roundEnd = checkRoundEnd();
     }
-
     std::cout << "end of round" << std::endl;
 
 }
@@ -214,4 +212,15 @@ bool Game::checkRoundEnd() {
 
     return noTilesLeft;
 
+}
+void Game::moveTiles(Player* p) {
+    int coloumn = 0;
+    for(int row = 0;row < 5;++row) {
+        char tile = p->getTile(row);
+        if(p->countStorage(row + 1,tile) == row+1 && tile != NO_TILE) {
+            coloumn = p->moveToMosaic(row + 1,tile);
+            // put scoring methods here
+            p->clearStorageRow(row);
+        }
+    }
 }

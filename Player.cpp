@@ -84,7 +84,6 @@ void Player::printMosaicLine(int row) {
 }
 
 //counts the total amount of tiles chained to the input co-ordinate vertically and horizontally, minus the broken tile floor penalties
-//TODO: gotta be a better way to do this
 int Player::calcScore(int row, int col){
     
     int score = 1;
@@ -163,4 +162,26 @@ void Player::addToBroken(Tile tile) {
 
 LinkedList* Player::getBroken() {
     return this->broken;
+}
+
+Tile Player::getTile(int row) {
+    return storage[row][row];
+}
+
+void Player::clearStorageRow(int row) {
+    for(int i = 0;i<row +1;++i) {
+        this->storage[row][i] = NO_TILE;
+    }
+}
+
+int Player::moveToMosaic(int row,char tile) {
+    char originalLine[] = {'B','Y','R','U','L'};
+    int lineIndex = 0;
+    for(int i = 0;i<5;++i) {
+        if(tile == originalLine[i]) {
+            lineIndex = i - 1;
+        }
+    }
+    lineIndex = (lineIndex + row) % 5;
+    this->mosaic[row - 1][lineIndex] = tile;
 }
