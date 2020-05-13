@@ -3,7 +3,7 @@
 
 Player::Player(std::string name)
    : name(name), points(0), broken(new LinkedList()) {
-       populateStorages();
+       initialiseBoard();
 }
 
 Player::~Player() {
@@ -18,22 +18,30 @@ int Player::getPoints(){
     return points;
 }
 
+//adds points to player score (may subtract thanks to floor demerits, but score may not drop below zero)
 void Player::addPoints(int points){
+
     this->points += points;
     if(this->points<0){
         this->points = 0;
     }
+    if(points>0){
+        std::cout << name << " scored " << points << " points, for a total of " << this->points << "." << std::endl;
+    }
+    if(points<0){
+        std::cout << "Oops! Due to penalties, " << name << " lost " << abs(points) << " points, bringing total down to " << this->points << "." << std::endl;
+    }
 }
 
-void Player::populateStorages() {
-    for(int i=0; i<5; ++i) {
-        this->storage[i] = new Tile[i + 1];    
+void Player::initialiseBoard() {
+    for(int i=0; i<SIZE; ++i) {
+        this->storage[i] = new Tile[i+1];    
         for(int j=0; j<i+1; ++j) {
             this->storage[i][j] = NO_TILE; 
         }
     } 
-    for(int i=0; i<5; ++i) {   
-        for(int j=0; j<5; ++j) {
+    for(int i=0; i<SIZE; ++i) {   
+        for(int j=0; j<SIZE; ++j) {
             this->mosaic[i][j] = NO_TILE;    
         }
     }    
@@ -58,9 +66,8 @@ int Player::countStorage(int row, Tile tile) {
 void Player::setStorage(int row, LinkedList* toInsert) {
     Tile tile = toInsert->get(0);
     int count = this->countStorage(row,tile);
-
     for(int i=0; i<toInsert->size(); ++i) {
-        if(count <= row) {
+        if(count < row) {
             this->storage[row-1][count] = tile;
             ++count;
         }
@@ -78,23 +85,23 @@ void Player::printStorageLine(int row) {
 }
 
 void Player::printMosaicLine(int row) {
-    for(int i=0; i<5; ++i) {
+    for(int i=0; i<SIZE; ++i) {
         std::cout << this->mosaic[row][i];
     }
 }
 
-//counts the total amount of tiles chained to the input co-ordinate vertically and horizontally, minus the broken tile floor penalties
+//counts the total amount of tiles chained to the input co-ordinate vertically and horizontally
 int Player::calcScore(int row, int col){
     
-    int score = 1;
-    bool connected;
+    int score = 0;
+    bool connected = false;
     
     //-------row check--------
     int rowCount = 0;
     //check row left 
-    if(col>0){
+    if(col>=0){
         connected = true;
-        for(int c=col-1; c>0; c--){   
+        for(int c=col-1; c>=0; c--){   
             if(connected && mosaic[row][c] != NO_TILE){
                 rowCount++;
             }
@@ -122,9 +129,9 @@ int Player::calcScore(int row, int col){
     //---------col check--------
     int colCount = 0;
     //check column up
-    if(row>0){
+    if(row>=0){
         connected = true;
-        for(int r=row-1; r>0; r--){   
+        for(int r=row-1; r>=0; r--){   
             if(connected && mosaic[r][col] != NO_TILE){
                 colCount++;
             }
@@ -150,13 +157,16 @@ int Player::calcScore(int row, int col){
     }
     //------end col check-------
 
-    //subtract demerits based on the amount of broken tiles on the "floor"
-    int demerits[8] = {0, -1, -2, -4, -6, -8, -11, -14};
-    return score + demerits[this->broken->size()];
+    //if it's a lone tile, still include the point for placing it
+    if(score==0){
+        score++;
+    }
+    return score;
     
 }
 
 void Player::addToBroken(Tile tile) {
+//TODO: add an if-not-full check first to prevent tiles being exiled
     this->broken->addFront(tile);
 }
 
@@ -174,14 +184,13 @@ void Player::clearStorageRow(int row) {
     }
 }
 
-int Player::moveToMosaic(int row,char tile) {
-    char originalLine[] = {'B','Y','R','U','L'};
+void Player::moveToMosaic(int row, Tile tile) {
     int lineIndex = 0;
-    for(int i = 0;i<5;++i) {
-        if(tile == originalLine[i]) {
-            lineIndex = i - 1;
+    for(int i=0; i<SIZE; ++i) {
+        if(tile == topRowOrder[i]) {
+            lineIndex = i-1;
         }
     }
-    lineIndex = (lineIndex + row) % 5;
-    this->mosaic[row - 1][lineIndex] = tile;
+    lineIndex = (lineIndex + row) % SIZE;
+    this->mosaic[row-1][lineIndex] = tile;
 }
