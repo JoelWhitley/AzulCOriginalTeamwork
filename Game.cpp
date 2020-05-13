@@ -82,11 +82,20 @@ bool Game::turn(Player* p) {
     int row = 0;
     std::cin >> key >> factoryRow >> tile >> row;
     LinkedList* found = new LinkedList();
+    bool failCondition = false;
     if(p->countStorage(row,tile) < 0) {
         return false;
     }
     if(tile == 'F') {
         return false;
+    }
+    for(int i = 0;i<4;++i) {
+        if(this->factories[factoryRow-1][i] == tile) {
+            failCondition = true;
+        }
+    }
+    if(failCondition == false) {
+        return failCondition;
     }
     if(key == "turn") {
         if(factoryRow < 6 && factoryRow > 0) {
