@@ -120,8 +120,12 @@ bool Game::turn(Player* p) {
             if((factory>0) && (factory<=FACTORIES)){
                 for(int i=0; i<FACTORY_SIZE; ++i){
                     //add specified tiles to temporary "found" place before storage, if there's room in storage row
-                    if(this->factories[factory-1][i] == tile){
+                    if(this->factories[factory-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
                         found->addFront(factories[factory-1][i]);
+                    }
+                    //add excess to broken tiles
+                    else if(this->factories[factory-1][i] == tile) {
+                        p->getBroken()->addBack(factories[factory-1][i]);
                     }
                     //add others to pile
                     else {
@@ -142,15 +146,20 @@ bool Game::turn(Player* p) {
                 }
                 //add specified tiles to "found"
                 for(int i=0; i < this->pile->size(); ++i){
-                     if(this->pile->get(i) == tile) {
+                    if(this->pile->get(i) == tile && (row - p->countStorage(row,tile)) > 0) {
                         found->addFront(this->pile->get(i));
                         this->pile->removeNodeAtIndex(i);
                     }
+                    else if(this->pile->get(i) == tile) {
+                        p->getBroken()->addBack(this->pile->get(i));
+                        this->pile->removeNodeAtIndex(i);
+                    }
+                    
                 }
                 p->setStorage(row, found);
                 isValid = true;
             }
-        }       
+        }
     }
     return isValid;
 }
