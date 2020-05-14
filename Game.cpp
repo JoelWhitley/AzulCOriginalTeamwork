@@ -50,32 +50,39 @@ void Game::play() {
 void Game::round() {
 
     bool roundEnd = false;
-    while(!roundEnd) { 
-        
-        printFactories();
-        //print mosaic for the player whos turn it is
-        printMosaic(this->currentPlayer);
-        if(turn(this->currentPlayer)) {
-            std::cout << "Success! " << currentPlayer->getName() << "'s new board:"<< std::endl;
-            printMosaic(this->currentPlayer); 
-            switchPlayer(this->currentPlayer);
+    bool gameEnd = false;
+    while(!gameEnd) {
+        while(!roundEnd) { 
+            
+            printFactories();
+            //print mosaic for the player whos turn it is
+            printMosaic(this->currentPlayer);
+            if(turn(this->currentPlayer)) {
+                std::cout << "Success! " << currentPlayer->getName() << "'s new board:"<< std::endl;
+                printMosaic(this->currentPlayer); 
+                switchPlayer(this->currentPlayer);
+            }
+            else { 
+                std::cout << "Fail, please try again." << std::endl;
+            }    
+            roundEnd = checkRoundEnd();
         }
-        else { 
-            std::cout << "Fail, please try again." << std::endl;
-        }    
-        roundEnd = checkRoundEnd();
+        std::cout << "---END OF ROUND " << roundNumber << "---" << std::endl;
+        std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
+        moveTiles(p1); 
+        std::cout << "---END OF ROUND " << roundNumber << "---" << std::endl;
+        std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
+        moveTiles(p2);
+        printMosaic(p1);
+        printMosaic(p2);
+        if(this->checkGameEnd(p1) == true || this->checkGameEnd(p2) == true) {
+            gameEnd = true;
+        }
+        else {
+            roundNumber++;
+            std::cout << "---STARTING ROUND " << roundNumber << "---" << std::endl;
+        }
     }
-    std::cout << "---END OF ROUND " << roundNumber << "---" << std::endl;
-    std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
-    moveTiles(p1); 
-    std::cout << "---END OF ROUND " << roundNumber << "---" << std::endl;
-    std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
-    moveTiles(p2);
-    printMosaic(p1);
-    printMosaic(p2);
-    roundNumber++;
-    std::cout << "---STARTING ROUND " << roundNumber << "---" << std::endl;
-
 }
 
 bool Game::turn(Player* p) {
@@ -86,19 +93,24 @@ bool Game::turn(Player* p) {
     Tile tile;
     int row;
     LinkedList* found = new LinkedList();
+    bool isValid = true;
     
     std::cout << "it is " << p->getName() << "'s turn: " << std::endl;
     //take input string, split into args
-    std::cin >> key >> factory >> tile >> row;
+    if(!(std::cin >> key >> factory >> tile >> row)) {
+        isValid = false;
+        std::cin.clear();
+        //std::cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+    }
+    
     //for case insensitivity during comparison
     tile = toupper(tile);
-
-    bool isValid = false;
     
     if(key=="exit" || key=="EXIT"){
         //back to menu, save, or something
     }    
-    else if(key=="turn" || key=="TURN"){
+    else if((key=="turn" || key=="TURN") && isValid == true) {
+        isValid = false;
         
         //amount of specified tile in specified factory
         int matchingTiles = matchingTilesInFactory(factory, tile);
@@ -234,6 +246,15 @@ bool Game::checkRoundEnd() {
 
     return noTilesLeft;
 
+}
+bool Game::checkGameEnd(Player* p) {
+    bool gameComplete = false;
+    for(int i = 0;i< SIZE;++i) {
+        if(p->checkComplete(i) == true) {
+            gameComplete = true;
+        }
+    }
+    return gameComplete;
 }
 
 void Game::moveTiles(Player* p) {

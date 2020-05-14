@@ -25,6 +25,7 @@ public:
    void clearStorageRow(int row);
    Tile getTile(int row);
    LinkedList* getBroken();
+   bool checkComplete(int row);
    
 private:
 

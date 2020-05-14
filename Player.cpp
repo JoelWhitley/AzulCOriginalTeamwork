@@ -194,3 +194,13 @@ void Player::moveToMosaic(int row, Tile tile) {
     lineIndex = (lineIndex + row) % SIZE;
     this->mosaic[row-1][lineIndex] = tile;
 }
+
+bool Player::checkComplete(int row) {
+    bool completeRow = true;
+    for(int i = 0;i< SIZE;++i) {
+        if(this->mosaic[row][i] == NO_TILE) {
+            completeRow = false;
+        }
+    }
+    return completeRow;
+}

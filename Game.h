@@ -19,6 +19,7 @@ class Game {
         void printFactories();
         void switchPlayer(Player* current);
         bool checkRoundEnd();
+        bool checkGameEnd(Player* p);
         void storageToMosaic();
         void moveTiles(Player* p);
         int getMosaicColumnByTile(int row, Tile tile);
