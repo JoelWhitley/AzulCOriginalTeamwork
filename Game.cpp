@@ -6,18 +6,21 @@
 Game::Game(Player* p1, Player* p2) {
     this->p1 = p1;
     this->p2 = p2;
-    setup(); 
+    this->setup(1); 
 }
 Game::~Game() {
     delete this;
 }
 
-void Game::setup() {
+void Game::setup(int roundNumber) {
     this->pile = new LinkedList();
     pile->addFront(FIRST_PLAYER);
     this->currentPlayer = p1;
     generateFactories();
-    roundNumber = 1;
+    if(roundNumber > 1) {
+        p1->getBroken()->clear();
+        p2->getBroken()->clear();
+    }
 }
 
 void Game::generateFactories() {
@@ -48,7 +51,7 @@ void Game::play() {
 }
 
 void Game::round() {
-
+    int roundNumber = 1;
     bool roundEnd = false;
     bool gameEnd = false;
     while(!gameEnd) {
@@ -83,7 +86,7 @@ void Game::round() {
             roundNumber++;
             std::cout << "---STARTING ROUND " << roundNumber << "---" << std::endl;
             roundEnd = false;
-            this->setup();
+            this->setup(roundNumber);
             this->generateFactories();
         }
     }

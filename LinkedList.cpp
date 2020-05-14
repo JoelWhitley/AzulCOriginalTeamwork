@@ -108,9 +108,9 @@ void LinkedList::removeFront() {
     this->head = current->next;
 }
 void LinkedList::clear() {
-    Node* current = this->head;
-    while(current->next != nullptr) {
-        current = nullptr;
+    
+    for(int i = 0;i<this->size();++i) {
+        this->removeNodeAtIndex(i);
     }
 }
 

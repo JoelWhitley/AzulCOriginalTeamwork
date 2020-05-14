@@ -7,7 +7,7 @@ class Game {
     
         Game(Player* p1, Player* p2);
         ~Game();
-        void setup();
+        void setup(int roundNumber);
         void generateFactories();
         Tile randomTile();
 
