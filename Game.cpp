@@ -198,7 +198,7 @@ void Game::printFactories() {
     std::cout << std::endl;
     for(int i=0; i<FACTORIES; ++i) {
         std::cout << i+1 << ": ";
-        for(int j=0; j<FACTORY_SIZE; ++j) { 
+        for(int j=0; j < FACTORY_SIZE; ++j) { 
             std::cout << this->factories[i][j] << " ";
         }
         std::cout << std::endl;
