@@ -77,10 +77,14 @@ void Game::round() {
         printMosaic(p2);
         if(this->checkGameEnd(p1) == true || this->checkGameEnd(p2) == true) {
             gameEnd = true;
+            
         }
         else {
             roundNumber++;
             std::cout << "---STARTING ROUND " << roundNumber << "---" << std::endl;
+            roundEnd = false;
+            this->setup();
+            this->generateFactories();
         }
     }
 }
@@ -144,15 +148,19 @@ bool Game::turn(Player* p) {
                     p->addToBroken(FIRST_PLAYER);
                     this->pile->removeFront();
                 }
+                int counter = 0;
                 //add specified tiles to "found"
-                for(int i=0; i < this->pile->size(); ++i){
-                    if(this->pile->get(i) == tile && (row - p->countStorage(row,tile)) > 0) {
-                        found->addFront(this->pile->get(i));
-                        this->pile->removeNodeAtIndex(i);
+                for(int i=0; i - counter < this->pile->size(); ++i){
+                    int adjustedCount = i - counter;
+                    if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
+                        found->addFront(this->pile->get(adjustedCount));
+                        this->pile->removeNodeAtIndex(adjustedCount);
+                        counter++;
                     }
-                    else if(this->pile->get(i) == tile) {
-                        p->getBroken()->addBack(this->pile->get(i));
-                        this->pile->removeNodeAtIndex(i);
+                    else if(this->pile->get(adjustedCount) == tile) {
+                        p->getBroken()->addBack(this->pile->get(adjustedCount));
+                        this->pile->removeNodeAtIndex(adjustedCount);
+                        counter++;
                     }
                     
                 }
