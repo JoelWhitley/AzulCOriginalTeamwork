@@ -40,6 +40,8 @@ void mainMenu() {
     std::cout << "(2): Credits" << std::endl;
     std::cout << "(3): Exit without Saving" << std::endl;
 	std::cin >> choice;
+    std::cin.clear();
+    std::cin.ignore();
     	  
 	if(choice == 1) {
         newGame();
