@@ -140,8 +140,45 @@ bool Game::turn(Player* p) {
             }
             file << std::endl;
         }
+                                                /*PLAYER 1 SAVE*/
         //Saving P1 Board
-        
+         for(int i=0; i<SIZE; ++i) {
+             for(int j=0; j<SIZE; ++j) {
+                    file << p1->mosaic[i][j];
+                }
+             file << std::endl;
+         }
+        //Saving P1 Storage
+         for(int j=0; j<SIZE; ++j) {
+             for(int i=j; i>=0; --i) {
+                 file << p1->storage[j][i];
+             }
+             file << std::endl;
+         }
+        //Player 1 Broken tiles.
+        for(int i=0; i < p1->getBroken()->size(); ++i) {
+            file << p1->getBroken()->get(i) << " ";
+        }
+                                                /*PLAYER 2 SAVE*/
+        //Saving P2 Board
+         for(int i=0; i<SIZE; ++i) {
+             for(int j=0; j<SIZE; ++j) {
+                    file << p2->mosaic[i][j];
+                }
+             file << std::endl;
+         }
+        //Saving P2 Storage
+         for(int j=0; j<SIZE; ++j) {
+             for(int i=j; i>=0; --i) {
+                 file << p2->storage[j][i];
+             }
+             file << std::endl;
+         }
+        //Player 2 Broken tiles.
+        for(int i=0; i < p2->getBroken()->size(); ++i) {
+            file << p2->getBroken()->get(i) << " ";
+        }
+                                             
         std::cout << "\n\nGame successfully saved\n> ";
         file.close();
        }

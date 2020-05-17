@@ -1,28 +1,29 @@
 class Node {
     public:
-        Node(int value, Node * next);
-        int value;
+        Node(char value, Node * next);
+        char value;
         Node* next;
 };
 
 class LinkedList {
     public:
-    LinkedList();
-    LinkedList(const LinkedList& other);
-    ~LinkedList();
+        LinkedList();
+        LinkedList(const LinkedList& other);
+        ~LinkedList();
 
-    int size();
-    
-    int get(int index);
-    bool get(int index, int& returnValue);
+        int size();
+        
+        char get(int index);
+        bool get(int index, char& returnValue);
 
-    void addBack(int value);
-    void addFront(int value);
+        void addBack(char value);
+        void addFront(char value);
 
-    void removeBack();
-    void removeFront();
+        void removeBack();
+        void removeFront();
 
-    void clear();
+        void clear();
+        void removeNodeAtIndex(int index);
 
     private:
         Node* head;

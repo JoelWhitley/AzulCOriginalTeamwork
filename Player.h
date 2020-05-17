@@ -27,12 +27,11 @@ public:
    LinkedList* getBroken();
    bool checkComplete(int row);
    Tile mosaic[SIZE][SIZE]; // Momentarily placed in public for testing
+   Tile** storage = new Tile*[SIZE];
 private:
 
     std::string name;
     int points;
-    Tile** storage = new Tile*[SIZE];
-    
     LinkedList* broken;
 
 };
