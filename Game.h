@@ -12,9 +12,10 @@ class Game {
         Tile randomTile();
 
         void play();
+        int userInput(Player* p);
         void round();
         void endRound();
-        bool turn(Player* p);
+        bool turn(Player* p, int factory, Tile tile, int row);
 
         void printMosaic(Player* p);
         void printFactories();
