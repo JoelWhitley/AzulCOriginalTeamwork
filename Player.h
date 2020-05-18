@@ -2,9 +2,8 @@
 #define AZUL_PLAYER
 
 #include "LinkedList.h"
-#include "Types.h"
+#include "Rules.h"
 #include <iostream>
-
 
 class Player {
 public:
@@ -15,22 +14,26 @@ public:
    std::string getName();
    int getPoints();
    void addPoints(int points);
-   int countStorage(int row,char tile);
+   int countStorage(int row, Tile tile);
    void setStorage(int row, LinkedList* toInsert);
-   void populateStorages();
+   void initialiseBoard();
    void printStorageLine(int row);
    void printMosaicLine(int row);
-   void addToBroken(char tile); 
-   char getTile(int row);
-   int moveToMosaic(int row,char tile);
    void clearStorageRow(int row);
    LinkedList* getBroken();
+   int calcScore(int row, int col);
+   void addToBroken(Tile tile);
+   int moveToMosaic(int row, Tile tile);
+   Tile getTile(int row);
+   bool checkComplete(int row);
+   
 private:
     std::string name;
     int points;
-    char** storage = new char*[5];
-    char mosaic[5][5];
+    Tile** storage = new Tile*[SIZE];
+    Tile mosaic[SIZE][SIZE];
     LinkedList* broken;
+
 };
 
 #endif // AZUL_PLAYER

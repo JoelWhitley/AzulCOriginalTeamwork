@@ -1,13 +1,23 @@
 #include <iostream>
 #include <string>
+#include <fstream>
+
 #include "Player.h"
 #include "Game.h"
 
 void mainMenu();
 void newGame();
 void printCredits();
+void loadGame();
 
 bool running;
+std::string player1Name;
+std::string player2Name;
+int player1Score;
+int player2Score;
+std::string player1ScoreString = "";
+std::string player2ScoreString = "";
+std::string nextTurn;
 
 int main() {
 
@@ -30,9 +40,9 @@ void mainMenu() {
     std::cout << "(2): Credits" << std::endl;
     std::cout << "(3): Exit without Saving" << std::endl;
 	std::cin >> choice;
-    	
-	
-	
+    std::cin.clear();
+    std::cin.ignore();
+    	  
 	if(choice == 1) {
         newGame();
         running = false;
@@ -56,7 +66,7 @@ void newGame() {
 
     std::string player1name;
     std::string player2name;
-    // Game game;
+    Game* game;
 
     std::cout << "Enter a name for Player 1:" << std::endl;
     std::cin >> player1name;
@@ -66,7 +76,7 @@ void newGame() {
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
-    Game* game = new Game(player1, player2);
+    game = new Game(player1, player2);
     std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
     game->play();
     
