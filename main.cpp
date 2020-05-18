@@ -48,9 +48,13 @@ void mainMenu() {
         running = false;
     }  
     else if(choice == 2) {
-		printCredits();
+		loadGame();
+        running = false;
     }
     else if(choice == 3) {
+		printCredits();
+    }
+    else if(choice == 4) {
         running = false;
         std::cout << "Goodbye." << std::endl;
     }
@@ -79,6 +83,10 @@ void newGame() {
     game = new Game(player1, player2);
     std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
     game->play();
+    
+}
+
+void loadGame() {
     
 }
 

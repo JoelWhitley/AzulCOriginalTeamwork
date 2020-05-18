@@ -110,7 +110,6 @@ bool Game::turn(Player* p) {
         isValid = false;
         std::cin.clear();
         std::cin.ignore();
-        
     }
     
     
@@ -121,7 +120,6 @@ bool Game::turn(Player* p) {
         //back to menu, save, or something
     }
     else if (key=="save" || key=="SAVE"){
-        std::cin >> saveName;
         std::ofstream file;
         file.open(saveName);
         //Entering players names into savefile
@@ -182,6 +180,7 @@ bool Game::turn(Player* p) {
                                              
         std::cout << "\n\nGame successfully saved\n> ";
         file.close();
+        isValid = true;
        }
 
     else if ((key=="turn" || key=="TURN") && isValid == true) {
