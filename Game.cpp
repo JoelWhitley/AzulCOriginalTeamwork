@@ -7,7 +7,7 @@
 Game::Game(Player* p1, Player* p2) {
     this->p1 = p1;
     this->p2 = p2;
-    
+    playerWithFPTile = p1;    
 }
 Game::~Game() {
     delete this;
@@ -16,11 +16,8 @@ Game::~Game() {
 void Game::setup() {
     this->pile = new LinkedList();
     pile->addFront(FIRST_PLAYER);
-    this->currentPlayer = p1;
-    generateFactories();
-    p1->getBroken()->clear();
-    p2->getBroken()->clear();
-    
+    this->currentPlayer = playerWithFPTile;
+    generateFactories();    
 }
 
 void Game::generateFactories() {
@@ -31,9 +28,8 @@ void Game::generateFactories() {
     }
 }
 
-Tile Game::randomTile() {
-    
-    int ran = rand() % 5;
+Tile Game::randomTile() {    
+    int ran = rand() % SIZE;
     return tileSelection[ran];
 }
 
@@ -41,54 +37,65 @@ Tile Game::randomTile() {
 
 void Game::play() {
     this->setup();
-    printFactories();  
     bool gameEnd = false;
     while(!gameEnd){
         round();
     }
-    std::cout << "Game over." << std::endl;
-    
+    std::cout << "Game over." << std::endl;    
 }
 
 void Game::round() {
+
     bool roundEnd = false;
-    bool gameEnd = false;
-    while(!gameEnd) {
-        while(!roundEnd) { 
-            
-            printFactories();
-            //print mosaic for the player whos turn it is
-            printMosaic(this->currentPlayer);
-            if(turn(this->currentPlayer)) {
-                std::cout << "Success! " << currentPlayer->getName() << "'s new board:"<< std::endl;
-                printMosaic(this->currentPlayer); 
-                switchPlayer(this->currentPlayer);
-            }
-            else { 
-                std::cout << "Fail, please try again." << std::endl;
-            }    
-            roundEnd = checkRoundEnd();
+    generateFactories();
+
+    std::cout << "---FACTORY OFFER PHASE---" << std::endl;
+    
+    while(!roundEnd) {         
+        printFactories();
+        printMosaic(this->currentPlayer);
+        if(turn(this->currentPlayer)) {
+            std::cout << "Success!" << std::endl;
+            printMosaic(this->currentPlayer); 
+            switchPlayer();
         }
-        std::cout << "---END OF ROUND " << "---" << std::endl;
-        std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
-        moveTiles(p1); 
-        std::cout << "---END OF ROUND " << "---" << std::endl;
-        std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
-        moveTiles(p2);
-        printMosaic(p1);
-        printMosaic(p2);
-        if(this->checkGameEnd(p1) == true || this->checkGameEnd(p2) == true) {
-            gameEnd = true;
-            
-        }
-        else {
-           
-            std::cout << "---STARTING ROUND " << "---" << std::endl;
-            roundEnd = false;
-            this->setup();
-            this->generateFactories();
-        }
+        else { 
+            std::cout << "Fail, please try again." << std::endl;
+        }    
+        roundEnd = checkRoundEnd();
     }
+
+    std::cout << "---TILES DEPLETED!---" << std::endl;
+    std::cout << "--- WALL TILING PHASE---" << std::endl;
+    std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
+    moveTiles(p1); 
+    std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
+    moveTiles(p2);
+    printMosaic(p1);
+    printMosaic(p2);
+    endRound();
+
+}
+
+void Game::endRound(){
+
+    //at the end of the round, one of the two players has to have the FP tile.
+    //
+    if(p1->getBroken()->contains(FIRST_PLAYER)){
+        playerWithFPTile = p1;
+    }
+    else {
+        playerWithFPTile = p2;
+    }    
+    p1->getBroken()->clear();
+    p2->getBroken()->clear();
+
+    std::cout << "---END OF ROUND " << "---" << std::endl;
+
+    if(this->checkGameEnd(p1) == true || this->checkGameEnd(p2) == true){
+        gameEnd = true;        
+    }  
+
 }
 
 bool Game::turn(Player* p) {
@@ -108,8 +115,7 @@ bool Game::turn(Player* p) {
         isValid = false;
         std::cin.clear();
         std::cin.ignore();
-    }
-    
+    }    
     
     //for case insensitivity during comparison
     tile = toupper(tile);
@@ -287,7 +293,7 @@ void Game::printMosaic(Player* p) {
     std::cout << "Mosaic for " << p->getName() << ":" << std::endl;
     for(int i=0; i<SIZE; ++i) {
         std::cout << i+1 << ": ";
-        for(int j=0; 4 > i + j; ++j) {
+        for(int j=0; FACTORY_SIZE > i + j; ++j) {
             std::cout << " ";
         }
         p->printStorageLine(i);
@@ -303,9 +309,8 @@ void Game::printMosaic(Player* p) {
 
 }
 
-void Game::switchPlayer(Player* current) {
-
-    if(current == p1) {
+void Game::switchPlayer() {
+    if(currentPlayer == p1) {
         this->currentPlayer = p2;
     }
     else {
@@ -314,9 +319,8 @@ void Game::switchPlayer(Player* current) {
 }
 
 bool Game::checkRoundEnd() {
-
+    //initialised to true, as it's faster to prove that there -are- tiles left, than it is to prove there aren't
     bool noTilesLeft = true;
-
     if(this->pile->size() > 0) {
         noTilesLeft = false;
     } 
@@ -327,13 +331,12 @@ bool Game::checkRoundEnd() {
             }
         }
     } 
-
     return noTilesLeft;
-
 }
+
 bool Game::checkGameEnd(Player* p) {
     bool gameComplete = false;
-    for(int i = 0;i< SIZE;++i) {
+    for(int i=0; !gameComplete && i<SIZE; ++i) {
         if(p->checkComplete(i) == true) {
             gameComplete = true;
         }
@@ -341,6 +344,7 @@ bool Game::checkGameEnd(Player* p) {
     return gameComplete;
 }
 
+//Sends tiles from player's FULL storage rows to their corresponding cells of the mosaic.
 void Game::moveTiles(Player* p) {
     for(int row=0; row<SIZE; ++row) {
         Tile tile = p->getTile(row);
@@ -354,8 +358,8 @@ void Game::moveTiles(Player* p) {
     p->addPoints(demerits[p->getBroken()->size()]);
 }
 
-int Game::getMosaicColumnByTile(int row, Tile tile){
-    
+//The standard Azul board staggers the tile order of each row by 1. Returns the column matching the input row and tile, based on the global "firstRowOrder".
+int Game::getMosaicColumnByTile(int row, Tile tile){    
     int lineIndex = 0;
     for(int i=0; i<SIZE; ++i) {
         if(tile == topRowOrder[i]) {
@@ -364,10 +368,9 @@ int Game::getMosaicColumnByTile(int row, Tile tile){
     }
     int output = (lineIndex+row) % SIZE;
     return output;
-
 }
-void Game::saveGame()
-{
+
+void Game::saveGame(){
     std::string filename;
     std::cout << "\nEnter a name for the save file:\n";
     std::cin >> filename;
@@ -378,6 +381,7 @@ void Game::saveGame()
     std::cout << "\n\nGame successfully saved\n> ";
     file.close();
 }
+
 void Game::loadGame(std::string filename) {
 
 }

@@ -13,11 +13,12 @@ class Game {
 
         void play();
         void round();
+        void endRound();
         bool turn(Player* p);
 
         void printMosaic(Player* p);
         void printFactories();
-        void switchPlayer(Player* current);
+        void switchPlayer();
         bool checkRoundEnd();
         bool checkGameEnd(Player* p);
         void storageToMosaic();
@@ -36,4 +37,6 @@ class Game {
         LinkedList* pile;
         int roundNumber;
         Player* nextPlayer;
+        Player* playerWithFPTile;
+        bool gameEnd;
 };
