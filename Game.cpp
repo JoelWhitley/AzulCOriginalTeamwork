@@ -106,7 +106,7 @@ bool Game::turn(Player* p) {
     
     std::cout << "it is " << p->getName() << "'s turn: " << std::endl;
     //take input string, split into args
-    if(!(std::cin >> key >> factory >> tile >> row) || !(std::cin >> key >> saveName)) {
+    if(!(std::cin >> key >> factory >> tile >> row) && !(std::cin >> key >> saveName)) {
         isValid = false;
         std::cin.clear();
         //std::cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
@@ -117,71 +117,9 @@ bool Game::turn(Player* p) {
     tile = toupper(tile);
     
     if(key=="exit" || key=="EXIT"){
-        //back to menu, save, or something
+        std::cout << " Thank you for playing AZUL" << std::endl;
+        return EXIT_SUCCESS;
     }
-    else if (key=="save" || key=="SAVE"){
-        std::cin >> saveName;
-        std::ofstream file;
-        file.open(saveName);
-        //Entering players names into savefile
-        file << p1->getName()<< std::endl ;
-        file << p2->getName()<< std::endl ;
-        //Entering players points into savefile
-        file << p1->getPoints() << std::endl ;
-        file << p2->getPoints() << std::endl ;
-        //Saving the factories
-        for(int j=0; j<this->pile->size(); ++j) {
-            file << pile->get(j) << " ";
-        }
-        file << std::endl;
-        for(int i=0; i<FACTORIES; ++i) {
-            for(int j=0; j < FACTORY_SIZE; ++j) {
-                file << this->factories[i][j] << " ";
-            }
-            file << std::endl;
-        }
-                                                /*PLAYER 1 SAVE*/
-        //Saving P1 Board
-         for(int i=0; i<SIZE; ++i) {
-             for(int j=0; j<SIZE; ++j) {
-                    file << p1->mosaic[i][j];
-                }
-             file << std::endl;
-         }
-        //Saving P1 Storage
-         for(int j=0; j<SIZE; ++j) {
-             for(int i=j; i>=0; --i) {
-                 file << p1->storage[j][i];
-             }
-             file << std::endl;
-         }
-        //Player 1 Broken tiles.
-        for(int i=0; i < p1->getBroken()->size(); ++i) {
-            file << p1->getBroken()->get(i) << " ";
-        }
-                                                /*PLAYER 2 SAVE*/
-        //Saving P2 Board
-         for(int i=0; i<SIZE; ++i) {
-             for(int j=0; j<SIZE; ++j) {
-                    file << p2->mosaic[i][j];
-                }
-             file << std::endl;
-         }
-        //Saving P2 Storage
-         for(int j=0; j<SIZE; ++j) {
-             for(int i=j; i>=0; --i) {
-                 file << p2->storage[j][i];
-             }
-             file << std::endl;
-         }
-        //Player 2 Broken tiles.
-        for(int i=0; i < p2->getBroken()->size(); ++i) {
-            file << p2->getBroken()->get(i) << " ";
-        }
-                                             
-        std::cout << "\n\nGame successfully saved\n> ";
-        file.close();
-       }
 
     else if ((key=="turn" || key=="TURN") && isValid == true) {
         isValid = false;
@@ -239,6 +177,71 @@ bool Game::turn(Player* p) {
             }
         }
     }
+    
+    else if (key=="save" || key=="SAVE"){
+           std::cin >> saveName;
+           std::ofstream file;
+           file.open(saveName);
+           //Entering players names into savefile
+           file << p1->getName()<< std::endl ;
+           file << p2->getName()<< std::endl ;
+           //Entering players points into savefile
+           file << p1->getPoints() << std::endl ;
+           file << p2->getPoints() << std::endl ;
+           //Saving the factories
+           for(int j=0; j<this->pile->size(); ++j) {
+               file << pile->get(j) << " ";
+           }
+           file << std::endl;
+           for(int i=0; i<FACTORIES; ++i) {
+               for(int j=0; j < FACTORY_SIZE; ++j) {
+                   file << this->factories[i][j] << " ";
+               }
+               file << std::endl;
+           }
+                                                   /*PLAYER 1 SAVE*/
+           //Saving P1 Board
+            for(int i=0; i<SIZE; ++i) {
+                for(int j=0; j<SIZE; ++j) {
+                       file << p1->mosaic[i][j];
+                   }
+                file << std::endl;
+            }
+           //Saving P1 Storage
+            for(int j=0; j<SIZE; ++j) {
+                for(int i=j; i>=0; --i) {
+                    file << p1->storage[j][i];
+                }
+                file << std::endl;
+            }
+           //Player 1 Broken tiles.
+           for(int i=0; i < p1->getBroken()->size(); ++i) {
+               file << p1->getBroken()->get(i) << " ";
+           }
+                                                   /*PLAYER 2 SAVE*/
+           //Saving P2 Board
+            for(int i=0; i<SIZE; ++i) {
+                for(int j=0; j<SIZE; ++j) {
+                       file << p2->mosaic[i][j];
+                   }
+                file << std::endl;
+            }
+           //Saving P2 Storage
+            for(int j=0; j<SIZE; ++j) {
+                for(int i=j; i>=0; --i) {
+                    file << p2->storage[j][i];
+                }
+                file << std::endl;
+            }
+           //Player 2 Broken tiles.
+           for(int i=0; i < p2->getBroken()->size(); ++i) {
+               file << p2->getBroken()->get(i) << " ";
+           }
+
+           std::cout << "\n\nGame successfully saved\n> ";
+           file.close();
+           isValid = true;
+          }
     return isValid;
 }
 
@@ -284,7 +287,7 @@ void Game::printFactories() {
 
 }
 
-void Game::printMosaic(Player* p) {
+void Game::printMosaic(Player* p) { 
 
     std::cout << "Mosaic for " << p->getName() << ":" << std::endl;
     for(int i=0; i<SIZE; ++i) {
@@ -366,17 +369,8 @@ int Game::getMosaicColumnByTile(int row, Tile tile){
     }
     int output = (lineIndex+row) % SIZE;
     return output;
+    // loop through lineIndex for each row
+    // double for
+    // at each position , insert the lower case letter at mosaic.
 
-}
-void Game::saveGame()
-{
-    std::string filename;
-    std::cout << "\nEnter a name for the save file:\n";
-    std::cin >> filename;
-    std::ofstream file;
-    file.open(filename);
-    //Enter the data to the file here
-    file << "Some data\nSome more data\nEven more data";
-    std::cout << "\n\nGame successfully saved\n> ";
-    file.close();
 }
