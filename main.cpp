@@ -26,7 +26,7 @@ int main() {
     while(running){
         mainMenu();
     }
-
+    
     return EXIT_SUCCESS;
 
 }
@@ -37,7 +37,8 @@ void mainMenu() {
 	
 	std::cout << "*** Welcome to 🅰 🆉 🆄 🅻 ***" << std::endl;
 	std::cout << "(1): New Game" << std::endl;
-    std::cout << "(2): Credits" << std::endl;
+    std::cout << "(2): Load Game" << std::endl;
+    std::cout << "(3): Credits" << std::endl;
     std::cout << "(3): Exit without Saving" << std::endl;
 	std::cin >> choice;
     std::cin.clear();
@@ -45,18 +46,16 @@ void mainMenu() {
     	  
 	if(choice == 1) {
         newGame();
-        running = false;
     }  
     else if(choice == 2) {
 		loadGame();
-        running = false;
     }
     else if(choice == 3) {
 		printCredits();
     }
     else if(choice == 4) {
-        running = false;
         std::cout << "Goodbye." << std::endl;
+        running = false;
     }
 	else {
 		std::cout << "Invalid choice." << std::endl;	
@@ -104,8 +103,8 @@ void printCredits() {
     std::cout << "Created by:" << std::endl
     << "s3687337 Joshua Monaghan-Landy" << std::endl
     << "s3787473 Joel Whitley" << std::endl
-    << "s3837218 Dinesh Premanath Amarakone Urulugastenne Mudiyanselage" << std::endl 
-    << "s3658845 Wen Koay" << std::endl;
+    << "s3658845 Wen Koay" << std::endl
+    << "s3837218 Dinesh Premanath Amarakone Urulugastenne Mudiyanselage" << std::endl;
 
     return;
 
