@@ -109,7 +109,8 @@ bool Game::turn(Player* p) {
     if(!(std::cin >> key >> factory >> tile >> row) || !(std::cin >> key >> saveName)) {
         isValid = false;
         std::cin.clear();
-        //std::cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
+        std::cin.ignore();
+        
     }
     
     
