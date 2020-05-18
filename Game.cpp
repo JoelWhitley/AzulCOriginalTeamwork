@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 Game::Game(Player* p1, Player* p2) {
     this->p1 = p1;
@@ -37,7 +38,7 @@ Tile Game::randomTile() {
 
 void Game::play() {
     this->setup();
-    bool gameEnd = false;
+    gameEnd = false;
     while(!gameEnd){
         round();
     }
@@ -46,6 +47,7 @@ void Game::play() {
 
 void Game::round() {
 
+    bool exit = false;
     bool roundEnd = false;
     generateFactories();
 
@@ -54,26 +56,39 @@ void Game::round() {
     while(!roundEnd) {         
         printFactories();
         printMosaic(this->currentPlayer);
-        if(turn(this->currentPlayer)) {
+
+        int outcome = userInput(this->currentPlayer);       
+        if(outcome == OUTCOME_TURNSUCCESS) {
             std::cout << "Success!" << std::endl;
             printMosaic(this->currentPlayer); 
             switchPlayer();
         }
-        else { 
+        else if(outcome == OUTCOME_TURNFAIL){ 
             std::cout << "Fail, please try again." << std::endl;
-        }    
-        roundEnd = checkRoundEnd();
+        }  
+        else if(outcome == OUTCOME_EXIT){
+            exit = true;
+            roundEnd = true;
+        }
+        if(!roundEnd){
+            roundEnd = checkRoundEnd();
+        }          
     }
 
-    std::cout << "---TILES DEPLETED!---" << std::endl;
-    std::cout << "--- WALL TILING PHASE---" << std::endl;
-    std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
-    moveTiles(p1); 
-    std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
-    moveTiles(p2);
-    printMosaic(p1);
-    printMosaic(p2);
-    endRound();
+    if(exit){
+        gameEnd = true;
+    }
+    else {
+        std::cout << "---TILES DEPLETED!---" << std::endl;
+        std::cout << "--- WALL TILING PHASE---" << std::endl;
+        std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
+        moveTiles(p1); 
+        std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
+        moveTiles(p2);
+        printMosaic(p1);
+        printMosaic(p2);
+        endRound(); 
+    }
 
 }
 
@@ -90,7 +105,7 @@ void Game::endRound(){
     p1->getBroken()->clear();
     p2->getBroken()->clear();
 
-    std::cout << "---END OF ROUND " << "---" << std::endl;
+    std::cout << "---END OF ROUND---" << std::endl;
 
     if(this->checkGameEnd(p1) == true || this->checkGameEnd(p2) == true){
         gameEnd = true;        
@@ -98,152 +113,105 @@ void Game::endRound(){
 
 }
 
-bool Game::turn(Player* p) {
-    //TODO: prevent adding tiles to storage when that type of tile already exists in that row of the mosaic
+int Game::userInput(Player* p){
 
-    std::string key;
-    std::string saveName;
+    int outcome = -1;
+    
+    std::string input;
+    std::string command;
     int factory;
     Tile tile;
     int row;
-    LinkedList* found = new LinkedList();
-    bool isValid = true;
     
     std::cout << "it is " << p->getName() << "'s turn: " << std::endl;
+
     //take input string, split into args
-    if(!(std::cin >> key >> factory >> tile >> row) && !(std::cin >> key >> saveName)) {
-        isValid = false;
-        std::cin.clear();
-        std::cin.ignore();
-    }    
-    
-    //for case insensitivity during comparison
-    tile = toupper(tile);
-    
-    if(key=="exit" || key=="EXIT"){
-        //back to menu, save, or something
+    getline(std::cin, input);
+    std::stringstream(input) >> command >> factory >> tile >> row;
+    std::stringstream(input).clear();
+    std::stringstream(input).ignore();
+       
+    if(command=="exit" || command=="EXIT"){
+        outcome = OUTCOME_EXIT;
     }
-    else if (key=="save" || key=="SAVE"){
-        std::ofstream file;
-        file.open(saveName);
-        //Entering players names into savefile
-        file << p1->getName()<< std::endl ;
-        file << p2->getName()<< std::endl ;
-        //Entering players points into savefile
-        file << p1->getPoints() << std::endl ;
-        file << p2->getPoints() << std::endl ;
-        //Saving the factories
-        for(int j=0; j<this->pile->size(); ++j) {
-            file << pile->get(j) << " ";
-        }
-        file << std::endl;
-        for(int i=0; i<FACTORIES; ++i) {
-            for(int j=0; j < FACTORY_SIZE; ++j) {
-                file << this->factories[i][j] << " ";
-            }
-            file << std::endl;
-        }
-                                                /*PLAYER 1 SAVE*/
-        //Saving P1 Board
-         for(int i=0; i<SIZE; ++i) {
-             for(int j=0; j<SIZE; ++j) {
-                    file << p1->mosaic[i][j];
-                }
-             file << std::endl;
-         }
-        //Saving P1 Storage
-         for(int j=0; j<SIZE; ++j) {
-             for(int i=j; i>=0; --i) {
-                 file << p1->storage[j][i];
-             }
-             file << std::endl;
-         }
-        //Player 1 Broken tiles.
-        for(int i=0; i < p1->getBroken()->size(); ++i) {
-            file << p1->getBroken()->get(i) << " ";
-        }
-                                                /*PLAYER 2 SAVE*/
-        //Saving P2 Board
-         for(int i=0; i<SIZE; ++i) {
-             for(int j=0; j<SIZE; ++j) {
-                    file << p2->mosaic[i][j];
-                }
-             file << std::endl;
-         }
-        //Saving P2 Storage
-         for(int j=0; j<SIZE; ++j) {
-             for(int i=j; i>=0; --i) {
-                 file << p2->storage[j][i];
-             }
-             file << std::endl;
-         }
-        //Player 2 Broken tiles.
-        for(int i=0; i < p2->getBroken()->size(); ++i) {
-            file << p2->getBroken()->get(i) << " ";
-        }
-                                             
-        std::cout << "\n\nGame successfully saved\n> ";
-        file.close();
-        isValid = true;
-       }
+    else if(command=="save" || command=="SAVE"){
+        saveGame();
+        outcome = OUTCOME_SAVE;
+    }
+    else if(command=="turn" || command=="TURN"){
+        //for case insensitivity during later comparison
+        tile = toupper(tile);
+        outcome = turn(p, factory, tile, row) ? OUTCOME_TURNSUCCESS : OUTCOME_TURNFAIL;
+    }
+    else{
+        outcome = OUTCOME_INVALID;
+    }
 
-    else if ((key=="turn" || key=="TURN") && isValid == true) {
-        isValid = false;
-        
-        //amount of specified tile in specified factory
-        int matchingTiles = matchingTilesInFactory(factory, tile);
+    return outcome;
 
-        if((matchingTiles>0) && (tile!=FIRST_PLAYER) && (p->countStorage(row,tile) >= 0)){ 
-            //if specified factory is orbiting/standard (not pile)
-            if((factory>0) && (factory<=FACTORIES)){
-                for(int i=0; i<FACTORY_SIZE; ++i){
-                    //add specified tiles to temporary "found" place before storage, if there's room in storage row
-                    if(this->factories[factory-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
-                        found->addFront(factories[factory-1][i]);
-                    }
-                    //add excess to broken tiles
-                    else if(this->factories[factory-1][i] == tile) {
-                        p->getBroken()->addBack(factories[factory-1][i]);
-                    }
-                    //add others to pile
-                    else {
-                        this->pile->addBack(this->factories[factory-1][i]);
-                    }
-                    this->factories[factory-1][i] = NO_TILE;
+}
+
+bool Game::turn(Player* p, int factory, Tile tile, int row) {
+    //TODO: prevent adding tiles to storage when that type of tile already exists in that row of the mosaic
+
+    LinkedList* found = new LinkedList();
+    bool isValid = true;
+
+    //amount of specified tile in specified factory
+    int matchingTiles = matchingTilesInFactory(factory, tile);
+
+    if((matchingTiles>0) && (tile!=FIRST_PLAYER) && (p->countStorage(row,tile) >= 0)){ 
+        //if specified factory is orbiting/standard (not pile)
+        if((factory>0) && (factory<=FACTORIES)){
+            for(int i=0; i<FACTORY_SIZE; ++i){
+                //add specified tiles to temporary "found" place before storage, if there's room in storage row
+                if(this->factories[factory-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
+                    found->addFront(factories[factory-1][i]);
                 }
-                //add matching "found" tiles to specified storage row
-                p->setStorage(row,found);
-                isValid = true;
+                //add excess to broken tiles
+                else if(this->factories[factory-1][i] == tile) {
+                    p->getBroken()->addBack(factories[factory-1][i]);
+                }
+                //add others to pile
+                else {
+                    this->pile->addBack(this->factories[factory-1][i]);
+                }
+                this->factories[factory-1][i] = NO_TILE;
             }
-            //if specified factory is middle pile
-            else if(factory == 0){
-                //move first_player tile to player's floor (if it's there)
-                if(this->pile->get(0) == FIRST_PLAYER){
-                    p->addToBroken(FIRST_PLAYER);
-                    this->pile->removeFront();
-                }
-                int counter = 0;
-                //add specified tiles to "found"
-                for(int i=0; i - counter < this->pile->size(); ++i){
-                    int adjustedCount = i - counter;
-                    if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
-                        found->addFront(this->pile->get(adjustedCount));
-                        this->pile->removeNodeAtIndex(adjustedCount);
-                        counter++;
-                    }
-                    else if(this->pile->get(adjustedCount) == tile) {
-                        p->getBroken()->addBack(this->pile->get(adjustedCount));
-                        this->pile->removeNodeAtIndex(adjustedCount);
-                        counter++;
-                    }
-                    
-                }
-                p->setStorage(row, found);
-                isValid = true;
-            }
+            //add matching "found" tiles to specified storage row
+            p->setStorage(row,found);
+            isValid = true;
         }
+        //if specified factory is middle pile
+        else if(factory == 0){
+            //move first_player tile to player's floor (if it's there)
+            if(this->pile->get(0) == FIRST_PLAYER){
+                p->addToBroken(FIRST_PLAYER);
+                this->pile->removeFront();
+            }
+            int counter = 0;
+            //add specified tiles to "found"
+            for(int i=0; i - counter < this->pile->size(); ++i){
+                int adjustedCount = i - counter;
+                if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
+                    found->addFront(this->pile->get(adjustedCount));
+                    this->pile->removeNodeAtIndex(adjustedCount);
+                    counter++;
+                }
+                else if(this->pile->get(adjustedCount) == tile) {
+                    p->getBroken()->addBack(this->pile->get(adjustedCount));
+                    this->pile->removeNodeAtIndex(adjustedCount);
+                    counter++;
+                }
+                
+            }
+            p->setStorage(row, found);
+            isValid = true;
+        }
+    
     }
     return isValid;
+
 }
 
 
@@ -371,15 +339,80 @@ int Game::getMosaicColumnByTile(int row, Tile tile){
 }
 
 void Game::saveGame(){
-    std::string filename;
-    std::cout << "\nEnter a name for the save file:\n";
-    std::cin >> filename;
-    std::ofstream file;
-    file.open(filename);
-    //Enter the data to the file here
-    file << "Some data\nSome more data\nEven more data";
-    std::cout << "\n\nGame successfully saved\n> ";
-    file.close();
+
+    std::string fileName;
+    std::cout << "\nEnter a name for the save file (or leave blank to cancel):\n";
+    getline(std::cin, fileName);
+    if(fileName.empty()){
+        std::cout << "Save aborted." << std::endl;
+    }
+    else { 
+        std::ofstream file;
+        file.open(fileName);
+
+        file << p1->getName()<< std::endl;                  //PLAYER 1 NAME
+        file << p2->getName()<< std::endl;                  //PLAYER 2 NAME
+        file << p1->getPoints() << std::endl;               //PLAYER 1 POINTS
+        file << p2->getPoints() << std::endl;               //PLAYER 2 POINTS
+        file << nextPlayer->getName() << std::endl;         //NEXT TURN
+
+        for(int j=0; j<this->pile->size(); ++j){            //FACTORY 0
+            file << pile->get(j) << " ";
+        }
+        
+        file << std::endl;
+
+        for(int i=0; i<FACTORIES; ++i){                     //FACTORY 1...FACTORIES
+            for(int j=0; j < FACTORY_SIZE; ++j){
+                file << this->factories[i][j] << " ";
+            }
+            file << std::endl;
+        }
+
+        for(int i=0; i<SIZE; ++i) {                         //PLAYER 1 MOSAIC ROW 1...SIZE
+            for(int j=0; j<SIZE; ++j) {
+                file << p1->mosaic[i][j];
+            }
+            file << std::endl;
+        }
+
+        for(int i=0; i<SIZE; ++i) {                         //PLAYER 2 MOSAIC ROW 1...SIZE
+            for(int j=0; j<SIZE; ++j) {
+                file << p2->mosaic[i][j];
+            }
+            file << std::endl;
+        }
+
+        for(int j=0; j<SIZE; ++j) {                         //PLAYER 1 STORAGE ROW 1...SIZE
+            for(int i=j; i>=0; --i) {
+                file << p1->storage[j][i];
+            }
+            file << std::endl;
+        }
+
+        for(int j=0; j<SIZE; ++j) {                         //PLAYER 2 STORAGE ROW 1...SIZE
+            for(int i=j; i>=0; --i) {
+                file << p2->storage[j][i];
+            }
+            file << std::endl;
+        }
+
+        for(int i=0; i < p1->getBroken()->size(); ++i) {    //PLAYER 1 BROKEN TILES
+            file << p1->getBroken()->get(i) << " ";
+        }
+
+        for(int i=0; i < p2->getBroken()->size(); ++i) {    //PLAYER 2 BROKEN TILES
+            file << p2->getBroken()->get(i) << " ";
+        }
+
+                                                            //BOX LID TILES
+                                                            //BAG TILES
+                                                            //RANDOM SEED
+                                                
+        std::cout << "\n\nGame successfully saved.\n> ";
+        file.close();
+    }
+
 }
 
 void Game::loadGame(std::string filename) {
