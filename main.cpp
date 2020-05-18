@@ -72,9 +72,9 @@ void newGame() {
     Game* game;
 
     std::cout << "Enter a name for Player 1:" << std::endl;
-    std::cin >> player1name;
+    getline(std::cin, player1name);
     std::cout << "Enter a name for Player 2:" << std::endl;
-    std::cin >> player2name;
+    getline(std::cin, player2name);
 
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
