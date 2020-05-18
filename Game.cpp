@@ -2,6 +2,7 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 
 Game::Game(Player* p1, Player* p2) {
     this->p1 = p1;
@@ -96,6 +97,7 @@ bool Game::turn(Player* p) {
     //TODO: prevent adding tiles to storage when that type of tile already exists in that row of the mosaic
 
     std::string key;
+    std::string saveName;
     int factory;
     Tile tile;
     int row;
@@ -104,19 +106,84 @@ bool Game::turn(Player* p) {
     
     std::cout << "it is " << p->getName() << "'s turn: " << std::endl;
     //take input string, split into args
-    if(!(std::cin >> key >> factory >> tile >> row)) {
+    if(!(std::cin >> key >> factory >> tile >> row) || !(std::cin >> key >> saveName)) {
         isValid = false;
         std::cin.clear();
         //std::cin.ignore(std::numeric_limits<streamsize>::max(), '\n');
     }
+    
     
     //for case insensitivity during comparison
     tile = toupper(tile);
     
     if(key=="exit" || key=="EXIT"){
         //back to menu, save, or something
-    }    
-    else if((key=="turn" || key=="TURN") && isValid == true) {
+    }
+    else if (key=="save" || key=="SAVE"){
+        std::cin >> saveName;
+        std::ofstream file;
+        file.open(saveName);
+        //Entering players names into savefile
+        file << p1->getName()<< std::endl ;
+        file << p2->getName()<< std::endl ;
+        //Entering players points into savefile
+        file << p1->getPoints() << std::endl ;
+        file << p2->getPoints() << std::endl ;
+        //Saving the factories
+        for(int j=0; j<this->pile->size(); ++j) {
+            file << pile->get(j) << " ";
+        }
+        file << std::endl;
+        for(int i=0; i<FACTORIES; ++i) {
+            for(int j=0; j < FACTORY_SIZE; ++j) {
+                file << this->factories[i][j] << " ";
+            }
+            file << std::endl;
+        }
+                                                /*PLAYER 1 SAVE*/
+        //Saving P1 Board
+         for(int i=0; i<SIZE; ++i) {
+             for(int j=0; j<SIZE; ++j) {
+                    file << p1->mosaic[i][j];
+                }
+             file << std::endl;
+         }
+        //Saving P1 Storage
+         for(int j=0; j<SIZE; ++j) {
+             for(int i=j; i>=0; --i) {
+                 file << p1->storage[j][i];
+             }
+             file << std::endl;
+         }
+        //Player 1 Broken tiles.
+        for(int i=0; i < p1->getBroken()->size(); ++i) {
+            file << p1->getBroken()->get(i) << " ";
+        }
+                                                /*PLAYER 2 SAVE*/
+        //Saving P2 Board
+         for(int i=0; i<SIZE; ++i) {
+             for(int j=0; j<SIZE; ++j) {
+                    file << p2->mosaic[i][j];
+                }
+             file << std::endl;
+         }
+        //Saving P2 Storage
+         for(int j=0; j<SIZE; ++j) {
+             for(int i=j; i>=0; --i) {
+                 file << p2->storage[j][i];
+             }
+             file << std::endl;
+         }
+        //Player 2 Broken tiles.
+        for(int i=0; i < p2->getBroken()->size(); ++i) {
+            file << p2->getBroken()->get(i) << " ";
+        }
+                                             
+        std::cout << "\n\nGame successfully saved\n> ";
+        file.close();
+       }
+
+    else if ((key=="turn" || key=="TURN") && isValid == true) {
         isValid = false;
         
         //amount of specified tile in specified factory
@@ -194,7 +261,6 @@ int Game::matchingTilesInFactory(int factory, Tile tile){
                 count++;
             }
         }
-        
     }
     return count;
 
@@ -247,7 +313,6 @@ void Game::switchPlayer(Player* current) {
     else {
         this->currentPlayer = p1;
     }
-
 }
 
 bool Game::checkRoundEnd() {
@@ -303,4 +368,15 @@ int Game::getMosaicColumnByTile(int row, Tile tile){
     return output;
 
 }
-
+void Game::saveGame()
+{
+    std::string filename;
+    std::cout << "\nEnter a name for the save file:\n";
+    std::cin >> filename;
+    std::ofstream file;
+    file.open(filename);
+    //Enter the data to the file here
+    file << "Some data\nSome more data\nEven more data";
+    std::cout << "\n\nGame successfully saved\n> ";
+    file.close();
+}

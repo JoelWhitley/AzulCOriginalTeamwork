@@ -19,19 +19,18 @@ public:
    void initialiseBoard();
    void printStorageLine(int row);
    void printMosaicLine(int row);
-   void clearStorageRow(int row);
-   LinkedList* getBroken();
    int calcScore(int row, int col);
    void addToBroken(Tile tile);
-   int moveToMosaic(int row, Tile tile);
+   void moveToMosaic(int row, Tile tile);
+   void clearStorageRow(int row);
    Tile getTile(int row);
+   LinkedList* getBroken();
    bool checkComplete(int row);
-   
+   Tile mosaic[SIZE][SIZE]; // Momentarily placed in public for testing
+   Tile** storage = new Tile*[SIZE];
 private:
     std::string name;
     int points;
-    Tile** storage = new Tile*[SIZE];
-    Tile mosaic[SIZE][SIZE];
     LinkedList* broken;
 
 };

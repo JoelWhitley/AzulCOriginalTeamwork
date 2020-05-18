@@ -19,11 +19,12 @@ class Game {
         void printFactories();
         void switchPlayer(Player* current);
         bool checkRoundEnd();
-        void moveTiles(Player* p);
         bool checkGameEnd(Player* p);
         void storageToMosaic();
+        void moveTiles(Player* p);
         int getMosaicColumnByTile(int row, Tile tile);
         int matchingTilesInFactory(int factory, Tile tile);
+        void saveGame();
         
     private:
 
@@ -33,5 +34,5 @@ class Game {
         Tile factories[FACTORIES][FACTORY_SIZE];
         LinkedList* pile;
         int roundNumber;
-
+        Player* nextPlayer;
 };

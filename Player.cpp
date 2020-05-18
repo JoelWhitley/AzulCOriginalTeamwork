@@ -184,7 +184,7 @@ void Player::clearStorageRow(int row) {
     }
 }
 
-int Player::moveToMosaic(int row, Tile tile) {
+void Player::moveToMosaic(int row, Tile tile) {
     int lineIndex = 0;
     for(int i=0; i<SIZE; ++i) {
         if(tile == topRowOrder[i]) {
@@ -193,7 +193,6 @@ int Player::moveToMosaic(int row, Tile tile) {
     }
     lineIndex = (lineIndex + row) % SIZE;
     this->mosaic[row-1][lineIndex] = tile;
-    return lineIndex;
 }
 
 bool Player::checkComplete(int row) {
