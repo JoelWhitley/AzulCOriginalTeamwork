@@ -85,8 +85,18 @@ void Player::printStorageLine(int row) {
 }
 
 void Player::printMosaicLine(int row) {
-    for(int i=0; i<SIZE; ++i) {
-        std::cout << this->mosaic[row][i];
+    for(int col=0; col<SIZE; col++) {
+        Tile currTile = mosaic[row][col];
+        if(currTile!=NO_TILE){
+            std::cout << currTile;
+        }
+        else {
+            //this stumped me for quite awhile
+            //i had excel spreadsheets and a whiteboard and six wolframalpha tabs telling me that (col-row)%SIZE should work
+            //turns out java and c++ modulo isn't actually true modulo, and that negative remainders can result
+            //so you have to spaghetti it to a true modulo
+            std::cout << (char)tolower(topRowOrder[(((col-row) % SIZE) + SIZE) % SIZE]);
+        }
     }
 }
 
