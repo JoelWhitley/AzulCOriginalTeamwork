@@ -64,11 +64,14 @@ void Game::round() {
             switchPlayer();
         }
         else if(outcome == OUTCOME_TURNFAIL){ 
-            std::cout << "Fail, please try again." << std::endl;
+            std::cout << "Turn failed, please try something else." << std::endl;
         }  
         else if(outcome == OUTCOME_EXIT){
             exit = true;
             roundEnd = true;
+        }
+        else if(outcome == OUTCOME_INVALID){
+            std::cout << "Invalid entry." << std::endl;
         }
         if(!roundEnd){
             roundEnd = checkRoundEnd();
@@ -95,7 +98,6 @@ void Game::round() {
 void Game::endRound(){
 
     //at the end of the round, one of the two players has to have the FP tile.
-    //
     if(p1->getBroken()->contains(FIRST_PLAYER)){
         playerWithFPTile = p1;
     }
@@ -141,6 +143,7 @@ int Game::userInput(Player* p){
     else if(command=="turn" || command=="TURN"){
         //for case insensitivity during later comparison
         tile = toupper(tile);
+        std::cout << input << std::endl;
         outcome = turn(p, factory, tile, row) ? OUTCOME_TURNSUCCESS : OUTCOME_TURNFAIL;
     }
     else{
@@ -155,7 +158,7 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
     //TODO: prevent adding tiles to storage when that type of tile already exists in that row of the mosaic
 
     LinkedList* found = new LinkedList();
-    bool isValid = true;
+    bool isValid = false;
 
     //amount of specified tile in specified factory
     int matchingTiles = matchingTilesInFactory(factory, tile);
@@ -354,7 +357,7 @@ void Game::saveGame(){
         file << p2->getName()<< std::endl;                  //PLAYER 2 NAME
         file << p1->getPoints() << std::endl;               //PLAYER 1 POINTS
         file << p2->getPoints() << std::endl;               //PLAYER 2 POINTS
-        file << nextPlayer->getName() << std::endl;         //NEXT TURN
+        file << currentPlayer->getName() << std::endl;      //NEXT TURN
 
         for(int j=0; j<this->pile->size(); ++j){            //FACTORY 0
             file << pile->get(j) << " ";
