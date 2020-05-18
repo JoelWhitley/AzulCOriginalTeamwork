@@ -25,6 +25,8 @@ class LinkedList {
         void clear();
         void removeNodeAtIndex(int index);
 
+        bool contains(char input);
+
     private:
         Node* head;
 

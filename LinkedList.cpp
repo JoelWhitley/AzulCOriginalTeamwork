@@ -129,3 +129,16 @@ void LinkedList::removeNodeAtIndex(int index) {
     }
 }
 
+bool LinkedList::contains(char input){
+
+    Node* current = this->head;
+    bool found = false;
+    while(!found && current != nullptr) {
+        if(current->value == input){
+            found = true;
+        }
+        current = current->next;
+    }
+    return found;
+}
+
