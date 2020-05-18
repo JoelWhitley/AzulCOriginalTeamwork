@@ -7,7 +7,7 @@ class Game {
     
         Game(Player* p1, Player* p2);
         ~Game();
-        void setup(int roundNumber);
+        void setup();
         void generateFactories();
         Tile randomTile();
 
@@ -25,6 +25,7 @@ class Game {
         int getMosaicColumnByTile(int row, Tile tile);
         int matchingTilesInFactory(int factory, Tile tile);
         void saveGame();
+        void loadGame(std::string filename);
         
     private:
 

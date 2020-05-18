@@ -7,21 +7,20 @@
 Game::Game(Player* p1, Player* p2) {
     this->p1 = p1;
     this->p2 = p2;
-    this->setup(1); 
+    
 }
 Game::~Game() {
     delete this;
 }
 
-void Game::setup(int roundNumber) {
+void Game::setup() {
     this->pile = new LinkedList();
     pile->addFront(FIRST_PLAYER);
     this->currentPlayer = p1;
     generateFactories();
-    if(roundNumber > 1) {
-        p1->getBroken()->clear();
-        p2->getBroken()->clear();
-    }
+    p1->getBroken()->clear();
+    p2->getBroken()->clear();
+    
 }
 
 void Game::generateFactories() {
@@ -41,8 +40,8 @@ Tile Game::randomTile() {
 //-------------------GAMEPLAY LOOP LOGIC-----------------
 
 void Game::play() {
-
-    printFactories();
+    this->setup();
+    printFactories();  
     bool gameEnd = false;
     while(!gameEnd){
         round();
@@ -52,7 +51,6 @@ void Game::play() {
 }
 
 void Game::round() {
-    int roundNumber = 1;
     bool roundEnd = false;
     bool gameEnd = false;
     while(!gameEnd) {
@@ -71,10 +69,10 @@ void Game::round() {
             }    
             roundEnd = checkRoundEnd();
         }
-        std::cout << "---END OF ROUND " << roundNumber << "---" << std::endl;
+        std::cout << "---END OF ROUND " << "---" << std::endl;
         std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
         moveTiles(p1); 
-        std::cout << "---END OF ROUND " << roundNumber << "---" << std::endl;
+        std::cout << "---END OF ROUND " << "---" << std::endl;
         std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
         moveTiles(p2);
         printMosaic(p1);
@@ -84,10 +82,10 @@ void Game::round() {
             
         }
         else {
-            roundNumber++;
-            std::cout << "---STARTING ROUND " << roundNumber << "---" << std::endl;
+           
+            std::cout << "---STARTING ROUND " << "---" << std::endl;
             roundEnd = false;
-            this->setup(roundNumber);
+            this->setup();
             this->generateFactories();
         }
     }
@@ -106,7 +104,7 @@ bool Game::turn(Player* p) {
     
     std::cout << "it is " << p->getName() << "'s turn: " << std::endl;
     //take input string, split into args
-    if(!(std::cin >> key >> factory >> tile >> row) || !(std::cin >> key >> saveName)) {
+    if(!(std::cin >> key >> factory >> tile >> row) && !(std::cin >> key >> saveName)) {
         isValid = false;
         std::cin.clear();
         std::cin.ignore();
@@ -379,4 +377,7 @@ void Game::saveGame()
     file << "Some data\nSome more data\nEven more data";
     std::cout << "\n\nGame successfully saved\n> ";
     file.close();
+}
+void Game::loadGame(std::string filename) {
+
 }

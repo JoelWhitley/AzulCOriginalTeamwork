@@ -87,7 +87,15 @@ void newGame() {
 }
 
 void loadGame() {
-    
+    Game* game;
+    std::string filename;
+
+    Player* player1 = new Player("");
+    Player* player2 = new Player("");
+
+    game = new Game(player1,player2);
+    std::cin >> filename;
+    game->loadGame(filename);
 }
 
 void printCredits() {
