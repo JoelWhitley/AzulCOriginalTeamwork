@@ -10,6 +10,8 @@ typedef char Tile;
 #define FACTORIES      5
 #define FACTORY_SIZE   4
 #define FLOOR_SIZE     8
+#define FLOOR_ROW      6    //SIZE+1
+#define GAME_TILES     100  //20 of each type (20*SIZE)
 
 // Tile codes
 #define FIRST_PLAYER  'F'

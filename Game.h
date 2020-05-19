@@ -1,14 +1,21 @@
+#ifndef AZUL_GAME
+#define AZUL_GAME
+
 #include "Player.h"
 #include "Rules.h"
+#include "LinkedList.h"
 
 class Game {
     
     public:
     
-        Game(Player* p1, Player* p2);
+        Game(Player* p1, Player* p2, int seed);
         ~Game();
         void setup();
         void generateFactories();
+        void generateTileBag(int seed);
+        Tile getTileFromBag();
+        void emptyLidIntoBag();
         Tile randomTile();
 
         void play();
@@ -41,4 +48,8 @@ class Game {
         Player* nextPlayer;
         Player* playerWithFPTile;
         bool gameEnd;
+        LinkedList* boxLid;
+        LinkedList* tileBag;
 };
+
+#endif
