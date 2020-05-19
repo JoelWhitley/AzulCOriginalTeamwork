@@ -40,6 +40,7 @@ void mainMenu() {
     std::cout << "(2): Load Game" << std::endl;
     std::cout << "(3): Credits" << std::endl;
     std::cout << "(3): Exit without Saving" << std::endl;
+    std::cout << ">";
 	std::cin >> choice;
     std::cin.clear();
     std::cin.ignore();
@@ -71,16 +72,16 @@ void newGame() {
     std::string player2name;
     Game* game;
 
-    std::cout << "Enter a name for Player 1:" << std::endl;
+    std::cout << "Enter a name for Player 1:\n>";
     getline(std::cin, player1name);
-    std::cout << "Enter a name for Player 2:" << std::endl;
+    std::cout << "Enter a name for Player 2:\n>";
     getline(std::cin, player2name);
 
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
     game = new Game(player1, player2);
-    std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!" << std::endl;
+    std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!\n\n";
     game->play();
     
 }
