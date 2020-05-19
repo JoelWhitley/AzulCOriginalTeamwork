@@ -252,6 +252,7 @@ int Game::userInput(Player* p){
     else if(command=="save" || command=="SAVE"){
         saveGame();
         outcome = OUTCOME_SAVE;
+        
     }
     else if(command=="turn" || command=="TURN"){
         //for case insensitivity during later comparison
@@ -475,6 +476,8 @@ void Game::saveGame(){
                                                                                       
         std::cout << "\nGame successfully saved.\n\n";
         file.close();
+        std::cout << "\nGame will now exit.\n\n";   
+        exit(1);
     }
 
 }
