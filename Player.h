@@ -15,7 +15,7 @@ public:
    int getPoints();
    void addPoints(int points);
    int countStorage(int row, Tile tile);
-   void setStorage(int row, LinkedList* toInsert);
+   void addToStorage(int row, LinkedList* toInsert);
    void initialiseBoard();
    void printStorageLine(int row);
    void printMosaicLine(int row);

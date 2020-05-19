@@ -63,17 +63,30 @@ int Player::countStorage(int row, Tile tile) {
     return count;
 }
 
-void Player::setStorage(int row, LinkedList* toInsert) {
-    Tile tile = toInsert->get(0);
-    int count = this->countStorage(row,tile);
-    for(int i=0; i<toInsert->size(); ++i) {
-        if(count < row) {
-            this->storage[row-1][count] = tile;
-            ++count;
+void Player::addToStorage(int row, LinkedList* toInsert) {
+    Tile tile = toInsert->get(0);    
+    if(row==FLOOR_ROW){
+        int count = getBroken()->size();
+        for(int i=0; i<toInsert->size(); ++i, count++) {
+            if(count < FLOOR_SIZE) {
+                this->broken->addFront(tile);
+            }
+            else {
+                //send to boxlid
+            }
         }
-        else {
-            this->broken->addFront(tile);
-            ++count;
+    }
+    else {
+        int count = this->countStorage(row,tile);
+        for(int i=0; i<toInsert->size(); ++i) {
+            if(count < row) {
+                this->storage[row-1][count] = tile;
+                ++count;
+            }
+            else {
+                this->broken->addFront(tile);
+                ++count;
+            }
         }
     }
 }
