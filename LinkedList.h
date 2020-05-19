@@ -1,3 +1,6 @@
+#ifndef LINKEDLIST
+#define LINKEDLIST
+
 class Node {
     public:
         Node(char value, Node * next);
@@ -26,8 +29,11 @@ class LinkedList {
         void removeNodeAtIndex(int index);
 
         bool contains(char input);
+        void print();
 
     private:
         Node* head;
 
 };
+
+#endif
