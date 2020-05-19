@@ -80,8 +80,9 @@ void newGame() {
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
-    game = new Game(player1, player2);
+    game = new Game(player1, player2, 0);
     std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!\n\n";
+    game->setup();
     game->play();
     
 }
@@ -93,7 +94,7 @@ void loadGame() {
     Player* player1 = new Player("");
     Player* player2 = new Player("");
 
-    game = new Game(player1,player2);
+    game = new Game(player1, player2, 0);
     std::cin >> filename;
     game->loadGame(filename);
 }
