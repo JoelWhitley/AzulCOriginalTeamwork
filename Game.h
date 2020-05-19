@@ -26,6 +26,7 @@ class Game {
         void moveTiles(Player* p);
         int getMosaicColumnByTile(int row, Tile tile);
         int matchingTilesInFactory(int factory, Tile tile);
+        void printHelp();
         void saveGame();
         void loadGame(std::string filename);
         

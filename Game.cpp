@@ -70,9 +70,6 @@ void Game::round() {
             exit = true;
             roundEnd = true;
         }
-        else if(outcome == OUTCOME_INVALID){
-            std::cout << "Invalid entry." << std::endl;
-        }
         if(!roundEnd){
             roundEnd = checkRoundEnd();
         }          
@@ -125,7 +122,7 @@ int Game::userInput(Player* p){
     Tile tile;
     int row;
     
-    std::cout << "it is " << p->getName() << "'s turn: " << std::endl;
+    std::cout << "it is " << p->getName() << "'s turn: \n>";
 
     //take input string, split into args
     getline(std::cin, input);
@@ -146,8 +143,13 @@ int Game::userInput(Player* p){
         std::cout << input << std::endl;
         outcome = turn(p, factory, tile, row) ? OUTCOME_TURNSUCCESS : OUTCOME_TURNFAIL;
     }
+    else if(command=="help" || command=="HELP"){
+        printHelp();
+        outcome = OUTCOME_INVALID;
+    }
     else{
         outcome = OUTCOME_INVALID;
+        std::cout << "Invalid input. Type \"help\" to see list of commands.\n";
     }
 
     return outcome;
@@ -163,12 +165,15 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
     //amount of specified tile in specified factory
     int matchingTiles = matchingTilesInFactory(factory, tile);
 
-    if((matchingTiles>0) && (tile!=FIRST_PLAYER) && (p->countStorage(row,tile) >= 0)){ 
-        //if specified factory is orbiting/standard (not pile)
+    if((matchingTiles>0) && (tile!=FIRST_PLAYER)){ 
+        //if specified factory is orbiting/standard (not middle pile)
         if((factory>0) && (factory<=FACTORIES)){
             for(int i=0; i<FACTORY_SIZE; ++i){
-                //add specified tiles to temporary "found" place before storage, if there's room in storage row
-                if(this->factories[factory-1][i] == tile && (row - p->countStorage(row,tile)) > 0) {
+                if(row==FLOOR){
+                    found->addFront(factories[factory-1][i]);
+                }
+                //prepare specified tiles to be sent to storage, if there's room in storage row
+                else if(this->factories[factory-1][i] == tile && (row - p->countStorage(row,tile)) > 0  && (p->countStorage(row,tile) >= 0)) {
                     found->addFront(factories[factory-1][i]);
                 }
                 //add excess to broken tiles
@@ -181,8 +186,6 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
                 }
                 this->factories[factory-1][i] = NO_TILE;
             }
-            //add matching "found" tiles to specified storage row
-            p->setStorage(row,found);
             isValid = true;
         }
         //if specified factory is middle pile
@@ -194,9 +197,14 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
             }
             int counter = 0;
             //add specified tiles to "found"
-            for(int i=0; i - counter < this->pile->size(); ++i){
-                int adjustedCount = i - counter;
-                if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0) {
+            for(int i=0; i-counter < this->pile->size(); ++i){
+                int adjustedCount = i-counter;
+                if(row==FLOOR){                    
+                    found->addFront(this->pile->get(adjustedCount));
+                    this->pile->removeNodeAtIndex(adjustedCount);
+                    counter++;
+                }
+                else if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0  && (p->countStorage(row,tile) >= 0)) {
                     found->addFront(this->pile->get(adjustedCount));
                     this->pile->removeNodeAtIndex(adjustedCount);
                     counter++;
@@ -208,8 +216,10 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
                 }
                 
             }
-            p->setStorage(row, found);
             isValid = true;
+        }
+        if(isValid){
+            p->addToStorage(row,found);
         }
     
     }
@@ -341,6 +351,14 @@ int Game::getMosaicColumnByTile(int row, Tile tile){
     return output;
 }
 
+void Game::printHelp(){
+    std::cout << "------VALID COMMANDS------\n" <<
+    "turn <factory> <tile> <destination row (" << FLOOR << " for the floor)>\n" <<
+    "save\n" <<
+    "exit\n" <<
+    "--------------------------\n";
+}
+
 void Game::saveGame(){
 
     std::string fileName;
@@ -407,12 +425,13 @@ void Game::saveGame(){
         for(int i=0; i < p2->getBroken()->size(); ++i) {    //PLAYER 2 BROKEN TILES
             file << p2->getBroken()->get(i) << " ";
         }
+        file << std::endl;
 
-                                                            //BOX LID TILES
-                                                            //BAG TILES
-                                                            //RANDOM SEED
-                                                
-        std::cout << "\n\nGame successfully saved.\n> ";
+        file << "BOX LID TILES\n";                          //BOX LID TILES
+        file << "BAG TILES\n";                              //BAG TILES
+        file << "RANDOM SEED\n";                              //RANDOM SEED                
+                                                                                      
+        std::cout << "\nGame successfully saved.\n\n";
         file.close();
     }
 
