@@ -81,7 +81,7 @@ void newGame() {
     Player* player2 = new Player(player2name);
 
     game = new Game(player1, player2, 0);
-    std::cout << player1->getName() << ", " << player2->getName() << ", let's play AZUL!\n\n";
+    std::cout << std::endl << player1->getName() << ", " << player2->getName() << ", let's play AZUL!\n\n";
     game->setup();
     game->play();
     

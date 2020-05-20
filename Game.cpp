@@ -21,7 +21,8 @@ void Game::setup() {
     generateTileBag(0);
     this->boxLid = new LinkedList();
     this->currentPlayer = playerWithFPTile;    
-    generateFactories();    
+    generateFactories();   
+    saved=true; 
 }
 
 void Game::generateTileBag(int seed){
@@ -94,16 +95,19 @@ void Game::round() {
         resumed = false;
     }
 
-    std::cout << "---FACTORY OFFER PHASE---" << std::endl;
+    std::cout << "\n---FACTORY OFFER PHASE---\n" << std::endl;
     
     while(!roundEnd) {         
         printFactories();
+        std::cout << std::endl;
+        std::cout << this->currentPlayer->getName() << "'s board:" << std::endl;
         printBoard(this->currentPlayer);
 
         int outcome = userInput(this->currentPlayer);       
         if(outcome == OUTCOME_TURNSUCCESS) {
-            std::cout << "Success!" << std::endl;
+            std::cout << "\nSuccess! " << this->currentPlayer->getName() << "'s new board:" << std::endl;
             printBoard(this->currentPlayer); 
+            std::cout << std::endl;
             switchPlayer();
         }
         else if(outcome == OUTCOME_TURNFAIL){ 
@@ -129,7 +133,9 @@ void Game::round() {
         moveTiles(p1); 
         std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
         moveTiles(p2);
+        std::cout << p1->getName() << "'s board:" << std::endl;
         printBoard(p1);
+        std::cout << p2->getName() << "'s board:" << std::endl;
         printBoard(p2);
         endRound(); 
     }
@@ -157,6 +163,8 @@ void Game::endRound(){
 }
 
 bool Game::turn(Player* p, int factory, Tile tile, int row) {
+
+    saved = false;
     //TODO: prevent adding tiles to storage when that type of tile already exists in that row of the mosaic
 
     LinkedList* found = new LinkedList();
@@ -244,7 +252,6 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
 int Game::userInput(Player* p){
 
     int outcome = -1;
-    
     std::string input;
     std::string command;
     int factory;
@@ -261,19 +268,21 @@ int Game::userInput(Player* p){
        
     if(command=="exit" || command=="EXIT"){
         outcome = OUTCOME_EXIT;
-        std::cout << "Would you like to save? (y/n):\n>";
-        char decision;
-        std::cin >> decision;
-        while(toupper(decision) != 'Y' && toupper(decision) != 'N'){
-            std::cout << "Please try again.\n>";
-            std::cin.clear();
-            std::cin.ignore();
+        if(!saved){
+            std::cout << "Would you like to save? (y/n):\n>";
+            char decision;
             std::cin >> decision;
-        }
-        if(toupper(decision)=='Y'){
-            std::cin.clear();
-            std::cin.ignore();
-            saveGame();
+            while(toupper(decision) != 'Y' && toupper(decision) != 'N'){
+                std::cout << "Please try again.\n>";
+                std::cin.clear();
+                std::cin.ignore();
+                std::cin >> decision;
+            }
+            if(toupper(decision)=='Y'){
+                std::cin.clear();
+                std::cin.ignore();
+                saveGame();
+            }
         }
     }
     else if(command=="save" || command=="SAVE"){
@@ -339,7 +348,6 @@ void Game::printFactories() {
 
 void Game::printBoard(Player* p) {
 
-    std::cout << p->getName() << "'s board:" << std::endl;
     for(int i=0; i<SIZE; ++i) {
         std::cout << i+1 << ": ";
         for(int j=0; FACTORY_SIZE > i + j; ++j) {
@@ -512,6 +520,7 @@ void Game::saveGame(){
         file << std::endl;
         file << "0";                                        //RANDOM SEED              
                                                                                       
+        saved = true;
         std::cout << "\nGame successfully saved.\n\n";
         file.close();
     }
