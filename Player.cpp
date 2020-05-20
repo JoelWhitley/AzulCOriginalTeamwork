@@ -14,8 +14,16 @@ std::string Player::getName(){
     return name;
 }
 
+void Player::setName(std::string name){
+    this->name = name;
+}
+
 int Player::getPoints(){
     return points;
+}
+
+void Player::setPoints(int points){
+    this->points = points;
 }
 
 //adds points to player score (may subtract thanks to floor demerits, but score may not drop below zero)
@@ -63,22 +71,22 @@ int Player::countStorage(int row, Tile tile) {
     return count;
 }
 
-void Player::addToStorage(int row, LinkedList* toInsert) {
+void Player::addToStorage(int row, LinkedList* toInsert, LinkedList* boxLid) {
     Tile tile = toInsert->get(0);    
     if(row==FLOOR_ROW){
-        int count = getBroken()->size();
-        for(int i=0; i<toInsert->size(); ++i, count++) {
+        int count = getBroken()->getSize();
+        for(int i=0; i<toInsert->getSize(); ++i, count++) {
             if(count < FLOOR_SIZE) {
                 this->broken->addFront(tile);
             }
             else {
-                //send to boxlid
+                boxLid->addBack(tile);
             }
         }
     }
     else {
         int count = this->countStorage(row,tile);
-        for(int i=0; i<toInsert->size(); ++i) {
+        for(int i=0; i<toInsert->getSize(); ++i) {
             if(count < row) {
                 this->storage[row-1][count] = tile;
                 ++count;
@@ -226,4 +234,14 @@ bool Player::checkComplete(int row) {
         }
     }
     return completeRow;
+}
+
+bool Player::mosaicRowHasTile(int row, Tile tile){
+    bool hasTile = false;
+    for(int i=0; i<SIZE; i++){
+        if(mosaic[row-1][i]==tile){
+            hasTile = true;
+        }
+    }
+    return hasTile;
 }

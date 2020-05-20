@@ -6,32 +6,38 @@
 #include <iostream>
 
 class Player {
-public:
 
-   Player(std::string name);
-   Player() = default;
-   ~Player();
-   std::string getName();
-   int getPoints();
-   void addPoints(int points);
-   int countStorage(int row, Tile tile);
-   void addToStorage(int row, LinkedList* toInsert);
-   void initialiseBoard();
-   void printStorageLine(int row);
-   void printMosaicLine(int row);
-   int calcScore(int row, int col);
-   void addToBroken(Tile tile);
-   void moveToMosaic(int row, Tile tile);
-   void clearStorageRow(int row);
-   Tile getTile(int row);
-   LinkedList* getBroken();
-   bool checkComplete(int row);
-   Tile mosaic[SIZE][SIZE]; // Momentarily placed in public for testing
-   Tile** storage = new Tile*[SIZE];
-private:
-    std::string name;
-    int points;
-    LinkedList* broken;
+    public:
+
+        Player(std::string name);
+        Player() = default;
+        ~Player();
+        std::string getName();
+        void setName(std::string name);
+        int getPoints();
+        void setPoints(int points);
+        void addPoints(int points);
+        int countStorage(int row, Tile tile);
+        void addToStorage(int row, LinkedList* toInsert, LinkedList* boxLid);
+        void initialiseBoard();
+        void printStorageLine(int row);
+        void printMosaicLine(int row);
+        int calcScore(int row, int col);
+        void addToBroken(Tile tile);
+        void moveToMosaic(int row, Tile tile);
+        void clearStorageRow(int row);
+        Tile getTile(int row);
+        LinkedList* getBroken();
+        bool checkComplete(int row);
+        Tile mosaic[SIZE][SIZE]; // Momentarily placed in public for testing
+        Tile** storage = new Tile*[SIZE];
+        bool mosaicRowHasTile(int row, Tile tile);
+
+    private:
+    
+        std::string name;
+        int points;
+        LinkedList* broken;
 
 };
 
