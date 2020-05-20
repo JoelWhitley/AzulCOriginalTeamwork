@@ -39,7 +39,7 @@ void mainMenu() {
 	std::cout << "(1): New Game" << std::endl;
     std::cout << "(2): Load Game" << std::endl;
     std::cout << "(3): Credits" << std::endl;
-    std::cout << "(3): Exit without Saving" << std::endl;
+    std::cout << "(4): Exit without Saving" << std::endl;
     std::cout << ">";
 	std::cin >> choice;
     std::cin.clear();
@@ -88,25 +88,38 @@ void newGame() {
 }
 
 void loadGame() {
+
     Game* game;
     std::string filename;
+    std::cout << "Input a filename to load from (or leave blank to cancel):\n>";
+    getline(std::cin, filename);
+    if(filename.empty()){
+        std::cout << "Load aborted." << std::endl;
+    }
+    else{
+        std::ifstream filein(filename);
+        if(filein.fail()){
+            std::cout << filename << " does not exist.\n";
+        }
+        else if(filein.good()) {
+            Player* player1 = new Player("");
+            Player* player2 = new Player("");
+            game = new Game(player1, player2, 0); 
+            game->loadGame(filein);
+            game->play();
+        }
+    }
 
-    Player* player1 = new Player("");
-    Player* player2 = new Player("");
-
-    game = new Game(player1, player2, 0);
-    std::cin >> filename;
-    game->loadGame(filename);
 }
 
 void printCredits() {
 
-    std::cout << "🅰 🆉 🆄 🅻" << std::endl;
+    std::cout << "\n🅰 🆉 🆄 🅻" << std::endl;
     std::cout << "Created by:" << std::endl
     << "s3687337 Joshua Monaghan-Landy" << std::endl
     << "s3787473 Joel Whitley" << std::endl
     << "s3658845 Wen Koay" << std::endl
-    << "s3837218 Dinesh Premanath Amarakone Urulugastenne Mudiyanselage" << std::endl;
+    << "s3837218 Dinesh Premanath Amarakone Urulugastenne Mudiyanselage\n" << std::endl;
 
     return;
 

@@ -24,7 +24,7 @@ class Game {
         void endRound();
         bool turn(Player* p, int factory, Tile tile, int row);
 
-        void printMosaic(Player* p);
+        void printBoard(Player* p);
         void printFactories();
         void switchPlayer();
         bool checkRoundEnd();
@@ -35,7 +35,7 @@ class Game {
         int matchingTilesInFactory(int factory, Tile tile);
         void printHelp();
         void saveGame();
-        void loadGame(std::string filename);
+        void loadGame(std::istream& filename);
         
     private:
 
@@ -44,12 +44,13 @@ class Game {
         Player* currentPlayer;
         Tile factories[FACTORIES][FACTORY_SIZE];
         LinkedList* pile;
-        int roundNumber;
-        Player* nextPlayer;
         Player* playerWithFPTile;
+        bool saved;
         bool gameEnd;
         LinkedList* boxLid;
         LinkedList* tileBag;
+        bool resumed;
+
 };
 
 #endif
