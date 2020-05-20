@@ -39,7 +39,7 @@ void mainMenu() {
 	std::cout << "(1): New Game" << std::endl;
     std::cout << "(2): Load Game" << std::endl;
     std::cout << "(3): Credits" << std::endl;
-    std::cout << "(4): Exit without Saving" << std::endl;
+    std::cout << "(4): Exit" << std::endl;
     std::cout << ">";
 	std::cin >> choice;
     std::cin.clear();

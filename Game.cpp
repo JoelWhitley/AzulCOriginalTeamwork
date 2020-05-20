@@ -261,11 +261,24 @@ int Game::userInput(Player* p){
        
     if(command=="exit" || command=="EXIT"){
         outcome = OUTCOME_EXIT;
+        std::cout << "Would you like to save? (y/n):\n>";
+        char decision;
+        std::cin >> decision;
+        while(toupper(decision) != 'Y' && toupper(decision) != 'N'){
+            std::cout << "Please try again.\n>";
+            std::cin.clear();
+            std::cin.ignore();
+            std::cin >> decision;
+        }
+        if(toupper(decision)=='Y'){
+            std::cin.clear();
+            std::cin.ignore();
+            saveGame();
+        }
     }
     else if(command=="save" || command=="SAVE"){
         saveGame();
-        outcome = OUTCOME_SAVE;
-        
+        outcome = OUTCOME_SAVE;        
     }
     else if(command=="turn" || command=="TURN"){
         //for case insensitivity during later comparison
@@ -447,28 +460,28 @@ void Game::saveGame(){
 
         for(int i=0; i<SIZE; ++i) {                         //PLAYER 1 MOSAIC ROWS
             for(int j=0; j<SIZE; ++j) {
-                file << p1->mosaic[i][j];
+                file << p1->mosaic[i][j] << " ";
             }
             file << std::endl;
         }
 
         for(int i=0; i<SIZE; ++i) {                         //PLAYER 2 MOSAIC ROWS
             for(int j=0; j<SIZE; ++j) {
-                file << p2->mosaic[i][j];
+                file << p2->mosaic[i][j] << " ";
             }
             file << std::endl;
         }
 
         for(int j=0; j<SIZE; ++j) {                         //PLAYER 1 STORAGE ROWS
             for(int i=j; i>=0; --i) {
-                file << p1->storage[j][i];
+                file << p1->storage[j][i] << " ";
             }
             file << std::endl;
         }
 
         for(int j=0; j<SIZE; ++j) {                         //PLAYER 2 STORAGE ROWS
             for(int i=j; i>=0; --i) {
-                file << p2->storage[j][i];
+                file << p2->storage[j][i] << " ";
             }
             file << std::endl;
         }
@@ -483,7 +496,7 @@ void Game::saveGame(){
         }
         file << std::endl;
 
-        for(int i=0; i < p2->getBroken()->getSize(); ++i) { //PLAYER 2 BROKEN TILES
+        for(int i=0; i < FLOOR_SIZE; ++i) {                 //PLAYER 2 BROKEN TILES
             if(i<p2->getBroken()->getSize()){
                 file << p2->getBroken()->get(i) << " ";
             }
@@ -497,20 +510,20 @@ void Game::saveGame(){
         file << std::endl;
         file << "";                                         //BAG TILES
         file << std::endl;
-        file << "0";                                        //RANDOM SEED  
-        file << std::endl;              
+        file << "0";                                        //RANDOM SEED              
                                                                                       
         std::cout << "\nGame successfully saved.\n\n";
         file.close();
-        std::cout << "\nGame will now exit.\n\n";   
-        exit(1);
     }
 
 }
 
 void Game::loadGame(std::istream& inputStream) {      
     
-    while(inputStream.good()){
+    
+    bool loadComplete = false;
+
+    while(inputStream.good() && !loadComplete){
         
         std::string name; 
         inputStream >> name;
@@ -646,6 +659,8 @@ void Game::loadGame(std::istream& inputStream) {
 
         int randomSeed;                                     //RANDOM SEED
         inputStream >> randomSeed;
+
+        loadComplete = true;
 
     }
     std::cout << "Game successfully loaded.\n\n";
