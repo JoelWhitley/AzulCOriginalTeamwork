@@ -14,7 +14,7 @@ class LinkedList {
         LinkedList(const LinkedList& other);
         ~LinkedList();
 
-        int size();
+        int getSize();
         
         char get(int index);
         bool get(int index, char& returnValue);
@@ -33,6 +33,7 @@ class LinkedList {
 
     private:
         Node* head;
+        int size;
 
 };
 
