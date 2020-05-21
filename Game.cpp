@@ -92,8 +92,8 @@ void Game::round() {
     bool roundEnd = false;
     if(!resumed){
         generateFactories();
-        resumed = false;
     }
+    resumed = false;
 
     std::cout << "\n---FACTORY OFFER PHASE---\n" << std::endl;
     
@@ -186,18 +186,21 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
         //if specified factory is orbiting/standard (not middle pile)
         if((factory>0) && (factory<=FACTORIES)){ 
             for(int i=0; i<FACTORY_SIZE; ++i){
-                if(row==FLOOR_ROW){ 
-                    found->addFront(factories[factory-1][i]);
-                }
-                //prepare specified tiles to be sent to storage (if there's room)
-                else if(this->factories[factory-1][i] == tile && roomInRow) {
-                    found->addFront(factories[factory-1][i]);
-                    roomInRow--;
-                }
-                //add excess to broken tiles
-                else if(this->factories[factory-1][i] == tile) { 
-                    p->getBroken()->addBack(factories[factory-1][i]);
-                }       
+                //if current tile is the player's chosen one
+                if(this->factories[factory-1][i] == tile){
+                    if(row==FLOOR_ROW){ 
+                        found->addFront(factories[factory-1][i]);
+                    }
+                    //prepare specified tiles to be sent to storage (if there's room)
+                    else if(roomInRow) {
+                        found->addFront(factories[factory-1][i]);
+                        roomInRow--;
+                    }
+                    //add excess to broken tiles
+                    else { 
+                        p->getBroken()->addBack(factories[factory-1][i]);
+                    }
+                }                
                 //add other tiletypes to pile         
                 else {  
                     this->pile->addBack(this->factories[factory-1][i]);
@@ -218,7 +221,7 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
             //add specified tiles to "found"
             for(int i=counter; i-counter < this->pile->getSize(); ++i){
                 int adjustedCount = i-counter;
-                if(row==FLOOR_ROW){                    
+                if(row==FLOOR_ROW && this->pile->get(adjustedCount) == tile){                    
                     found->addFront(this->pile->get(adjustedCount));
                     this->pile->removeNodeAtIndex(adjustedCount);
                     counter++;
