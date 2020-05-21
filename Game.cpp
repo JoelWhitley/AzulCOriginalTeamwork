@@ -192,7 +192,7 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
                         found->addFront(factories[factory-1][i]);
                     }
                     //prepare specified tiles to be sent to storage (if there's room)
-                    else if(roomInRow) {
+                    else if(roomInRow > 0) {
                         found->addFront(factories[factory-1][i]);
                         roomInRow--;
                     }
@@ -221,23 +221,27 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
             //add specified tiles to "found"
             for(int i=counter; i-counter < this->pile->getSize(); ++i){
                 int adjustedCount = i-counter;
-                if(row==FLOOR_ROW && this->pile->get(adjustedCount) == tile){                    
-                    found->addFront(this->pile->get(adjustedCount));
-                    this->pile->removeNodeAtIndex(adjustedCount);
-                    counter++;
+                if(this->pile->get(adjustedCount) == tile){
+                    if(row==FLOOR_ROW){                    
+                        found->addFront(this->pile->get(adjustedCount));
+                        this->pile->removeNodeAtIndex(adjustedCount);
+                        counter++;
+                    }
+                    //if there's still room in specified row, send it there
+                    else if(roomInRow > 0) {
+                        found->addFront(this->pile->get(adjustedCount));
+                        this->pile->removeNodeAtIndex(adjustedCount);
+                        roomInRow--;
+                        counter++;
+                    }
+                    //if not, send to floor
+                    else {
+                        p->getBroken()->addBack(this->pile->get(adjustedCount));
+                        this->pile->removeNodeAtIndex(adjustedCount);
+                        counter++;
+                    }
                 }
-                //if there's still room in specified row, send it there
-                else if(this->pile->get(adjustedCount) == tile && (row - p->countStorage(row,tile)) > 0  && (p->countStorage(row,tile) >= 0)) {
-                    found->addFront(this->pile->get(adjustedCount));
-                    this->pile->removeNodeAtIndex(adjustedCount);
-                    counter++;
-                }
-                //if not, send to floor
-                else if(this->pile->get(adjustedCount) == tile) {
-                    p->getBroken()->addBack(this->pile->get(adjustedCount));
-                    this->pile->removeNodeAtIndex(adjustedCount);
-                    counter++;
-                }
+                
                 
             }
             isValid = true;
