@@ -469,7 +469,7 @@ void Game::printHelp(){
 
 void Game::saveGame() {            
         SaveAndLoad* save = new SaveAndLoad(this,this->p1, this->p2, this->pile,
-                this->tileBag, this->boxLid, this->playerWithFPTile, this->currentPlayer);
+                this->tileBag, this->boxLid, this->currentPlayer);
         save->saveGame();                                                                             
         saved = true;
 
@@ -478,7 +478,7 @@ void Game::saveGame() {
 void Game::loadGame(std::istream& inputStream) {      
     
     SaveAndLoad* load = new SaveAndLoad(this,this->p1, this->p2, this->pile,
-                this->tileBag, this->boxLid, this->playerWithFPTile, this->currentPlayer);
+                this->tileBag, this->boxLid, this->currentPlayer);
 
     load->loadGame(inputStream);
 

@@ -6,9 +6,9 @@
 
 
 SaveAndLoad::SaveAndLoad(Game* game, Player* p1, Player* p2, LinkedList* pile,
-                LinkedList* tileBag, LinkedList* boxLid, Player* FPplayer, Player* currentPlayer)
-                : game(game),p1(p1),p2(p2),pile(pile),tileBag(tileBag),boxLid(boxLid),
-                    FPplayer(FPplayer),currentPlayer(currentPlayer) {
+                LinkedList* tileBag, LinkedList* boxLid, Player* currentPlayer)
+                : game(game),p1(p1),p2(p2),pile(pile),tileBag(tileBag),boxLid(boxLid)
+                    ,currentPlayer(currentPlayer) {
                 }
 SaveAndLoad::~SaveAndLoad() {
     delete this;

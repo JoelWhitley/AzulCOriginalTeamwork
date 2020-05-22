@@ -3,7 +3,7 @@ class Game;
 class SaveAndLoad {
     public:
         SaveAndLoad(Game* game,Player* p1, Player* p2, LinkedList* pile,
-                LinkedList* tileBag, LinkedList* boxLid, Player* FPplayer, Player* currentPlayer);
+                LinkedList* tileBag, LinkedList* boxLid, Player* currentPlayer);
         ~SaveAndLoad();
         void loadGame(std::istream& inputStream);
         void saveGame();
@@ -14,7 +14,6 @@ class SaveAndLoad {
         LinkedList* pile;
         LinkedList* tileBag;
         LinkedList* boxLid;
-        Player* FPplayer;
         Player* currentPlayer;
         
 };
