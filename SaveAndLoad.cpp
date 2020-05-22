@@ -68,9 +68,6 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
                     if(isupper(mosaicTile)) {
                         player->moveToMosaic(i,mosaicTile);
                     }
-                    else {
-                        player->moveToMosaic(i,NO_TILE);
-                    }
                 }
             }
         }
@@ -98,14 +95,14 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
                 inputStream >> brokenTile;
                 if(brokenTile != NO_TILE){
                     if(brokenTile == FIRST_PLAYER){
-                        game->setPlayerWithFPTile(player);                  //PLAYER WITH FP TILE
+                        game->setPlayerWithFPTile(player);  //PLAYER WITH FP TILE
                     }
                     player->getBroken()->addBack(brokenTile);
                 }            
             }
         }
 
-        inputStream.ignore();                              //BOX LID TILES
+        inputStream.ignore();                               //BOX LID TILES
         std::string boxLidLine;
         getline(inputStream, boxLidLine);
         Tile boxLidTile;
@@ -114,7 +111,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
             boxLid->addBack(boxLidTile);
         } 
 
-        inputStream.ignore();                              //BAG TILES
+        inputStream.ignore();                               //BAG TILES
         std::string tileBagLine;
         getline(inputStream, tileBagLine);
         Tile tileBagTile;
