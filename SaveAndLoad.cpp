@@ -105,14 +105,14 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
         inputStream.ignore();                               //BOX LID TILES
         std::string boxLidLine;
         getline(inputStream, boxLidLine);
+        getline(inputStream, boxLidLine);
         Tile boxLidTile;
         std::stringstream boxLidStream(boxLidLine);
         while(boxLidStream >> boxLidTile){
             boxLid->addBack(boxLidTile);
         } 
-
-        inputStream.ignore();                               //BAG TILES
-        std::string tileBagLine;
+                             
+        std::string tileBagLine;                            //BAG TILES
         getline(inputStream, tileBagLine);
         Tile tileBagTile;
         std::stringstream tileBagStream(tileBagLine);
