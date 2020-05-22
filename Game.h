@@ -19,7 +19,8 @@ class Game {
         Tile randomTile();
 
         void play();
-        int userInput(Player* p);
+        int turnPrompt(Player* p);
+        std::string userInput();
         void round();
         void endRound();
         void endGame();

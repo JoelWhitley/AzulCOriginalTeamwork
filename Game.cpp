@@ -104,7 +104,7 @@ void Game::round() {
         std::cout << this->currentPlayer->getName() << "'s board:" << std::endl;
         printBoard(this->currentPlayer);
 
-        int outcome = userInput(this->currentPlayer);       
+        int outcome = turnPrompt(this->currentPlayer);       
         if(outcome == OUTCOME_TURNSUCCESS) {
             std::cout << "\nSuccess! " << this->currentPlayer->getName() << "'s new board:" << std::endl;
             printBoard(this->currentPlayer); 
@@ -269,7 +269,7 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
 
 //--------------END OF GAMEPLAY LOOP LOGIC-----------------
 
-int Game::userInput(Player* p){
+int Game::turnPrompt(Player* p){
 
     int outcome = -1;
     std::string input;
@@ -278,10 +278,10 @@ int Game::userInput(Player* p){
     Tile tile;
     int row;
     
-    std::cout << "it is " << p->getName() << "'s turn: \n>";
+    std::cout << "it is " << p->getName() << "'s turn: \n";
 
     //take input string, split into args
-    getline(std::cin, input);
+    input = userInput();
     std::stringstream(input) >> command >> factory >> tile >> row;
     std::stringstream(input).clear();
     std::stringstream(input).ignore();
@@ -289,18 +289,13 @@ int Game::userInput(Player* p){
     if(command=="exit" || command=="EXIT"){
         outcome = OUTCOME_EXIT;
         if(!saved){
-            std::cout << "Would you like to save? (y/n):\n>";
-            char decision;
-            std::cin >> decision;
-            while(toupper(decision) != 'Y' && toupper(decision) != 'N'){
-                std::cout << "Please try again.\n>";
-                std::cin.clear();
-                std::cin.ignore();
-                std::cin >> decision;
+            std::cout << "Would you like to save? (y/n):\n";
+            std::string decision = userInput();
+            while(decision != "Y" && decision != "y" && decision != "N" && decision != "n"){
+                std::cout << "Please try again.\n";
+                decision = userInput();
             }
-            if(toupper(decision)=='Y'){
-                std::cin.clear();
-                std::cin.ignore();
+            if(decision=="Y" || decision=="y"){
                 saveGame();
             }
         }
@@ -324,6 +319,21 @@ int Game::userInput(Player* p){
     }
 
     return outcome;
+
+}
+
+std::string Game::userInput(){
+
+    std::string input;
+    std::cout << "> "; 
+    getline(std::cin, input);
+    if(std::cin.eof()){
+        std::cout << "Goodbye." << std::endl;
+        exit(EXIT_SUCCESS);
+    }  
+    std::cin.clear();
+
+    return input;
 
 }
 
@@ -458,7 +468,7 @@ void Game::printHelp(){
 void Game::saveGame(){
 
     std::string fileName;
-    std::cout << "\nEnter a name for the save file (or leave blank to cancel):\n";
+    std::cout << "\nEnter a name for the save file (or leave blank to cancel):";
     getline(std::cin, fileName);
     if(fileName.empty()){
         std::cout << "Save aborted." << std::endl;
