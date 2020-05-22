@@ -475,22 +475,28 @@ void Game::saveGame() {
 
 void Game::loadGame(std::istream& inputStream) {      
     
-    bool loadComplete = false;
-
     SaveAndLoad* load = new SaveAndLoad(this,this->p1, this->p2, this->pile,
                 this->tileBag, this->boxLid, this->playerWithFPTile, this->currentPlayer);
 
-    while(inputStream.good() && !loadComplete) {
-        load->loadGame(inputStream);
-    }
+    load->loadGame(inputStream);
+
     this->saved = true;
     this->resumed = true;
+
+}
+
+void Game::setCurrentPlayer(Player* p){
+    currentPlayer = p;
+}
+
+void Game::setPlayerWithFPTile(Player* p){
 
 }
 
 void Game::setFactory(int row, int column, Tile insert) {
     this->factories[row][column] = insert;
 }
+
 Tile Game::getTileWithinFactory(int row, int column) {
     return this->factories[row][column];
 }

@@ -6,7 +6,7 @@
 
 
 SaveAndLoad::SaveAndLoad(Game* game, Player* p1, Player* p2, LinkedList* pile,
-                LinkedList* tileBag, LinkedList* boxLid, Player* FPplayer,Player* currentPlayer)
+                LinkedList* tileBag, LinkedList* boxLid, Player* FPplayer, Player* currentPlayer)
                 : game(game),p1(p1),p2(p2),pile(pile),tileBag(tileBag),boxLid(boxLid),
                     FPplayer(FPplayer),currentPlayer(currentPlayer) {
                 }
@@ -35,12 +35,12 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
         }
 
         std::string currentPlayerName;
-        inputStream >> currentPlayerName;                       //NEXT TURN
+        inputStream >> currentPlayerName;                   //NEXT TURN
         if(currentPlayerName == name) {
-            currentPlayer = p2;
+            game->setCurrentPlayer(p2);
         }
         else {
-            currentPlayer = p1;
+            game->setCurrentPlayer(p1);
         }
         
         inputStream.ignore();                               //FACTORY 0 (PILE)
@@ -98,7 +98,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
                 inputStream >> brokenTile;
                 if(brokenTile != NO_TILE){
                     if(brokenTile == FIRST_PLAYER){
-                        FPplayer = player;                  //PLAYER WITH FP TILE
+                        game->setPlayerWithFPTile(player);                  //PLAYER WITH FP TILE
                     }
                     player->getBroken()->addBack(brokenTile);
                 }            

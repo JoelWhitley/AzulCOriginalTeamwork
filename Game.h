@@ -45,7 +45,9 @@ class Game {
         void saveGame();
         void loadGame(std::istream& filename);
         void setFactory(int row, int column, Tile insert);
-        Tile getTileWithinFactory(int row,int column);
+        void setCurrentPlayer(Player* p);
+        void setPlayerWithFPTile(Player* p);
+        Tile getTileWithinFactory(int row, int column);
         
     private:
 
