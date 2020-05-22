@@ -165,7 +165,7 @@ void SaveAndLoad::saveGame(){
         for(Player* p : players){
             for(int i=0; i<SIZE; ++i) {                     //PLAYER MOSAIC ROWS
                 for(int j=0; j<SIZE; ++j) {
-                    file << p->mosaic[i][j] << " ";
+                    file << p->getMosaicCell(i,j) << " ";
                 }
                 file << std::endl;
             }
@@ -173,7 +173,7 @@ void SaveAndLoad::saveGame(){
         for(Player* p : players){
             for(int j=0; j<SIZE; ++j) {                     //PLAYER STORAGE ROWS
                 for(int i=j; i>=0; --i) {
-                    file << p->storage[j][j-i] << " ";
+                    file << p->getStorageCell(j, j-i) << " ";
                 }
                 file << std::endl;
             }
