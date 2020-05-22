@@ -1,5 +1,5 @@
 #include "Game.h"
-
+#include "SaveAndLoad.h"
 #include <string>
 #include <iostream>
 #include <fstream>
@@ -183,7 +183,7 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
     std::vector<Tile> found;
     bool isValid = false;
     bool compatibleTileRow = false;
-    int roomInRow;
+    int roomInRow = 0;
     bool validRow = true;
 
     //amount of specified tile in specified factory
@@ -455,219 +455,32 @@ void Game::printHelp(){
     "--------------------------\n";
 }
 
-void Game::saveGame(){
-
-    std::string fileName;
-    std::cout << "\nEnter a name for the save file (or leave blank to cancel):\n";
-    getline(std::cin, fileName);
-    if(fileName.empty()){
-        std::cout << "Save aborted." << std::endl;
-    }
-    else { 
-        std::ofstream file;
-        file.open(fileName);
-
-        file << p1->getName()<< std::endl;                  //PLAYER 1 NAME
-        file << p2->getName()<< std::endl;                  //PLAYER 2 NAME
-        file << p1->getPoints() << std::endl;               //PLAYER 1 POINTS
-        file << p2->getPoints() << std::endl;               //PLAYER 2 POINTS
-        file << currentPlayer->getName() << std::endl;      //NEXT TURN
-
-        for(int j=0; j<this->pile->getSize(); ++j){         //FACTORY 0 (PILE)
-            file << pile->get(j) << " ";
-        }
-        
-        file << std::endl;
-
-        for(int i=0; i<FACTORIES; ++i){                     //FACTORIES
-            for(int j=0; j < FACTORY_SIZE; ++j){
-                file << this->factories[i][j] << " ";
-            }
-            file << std::endl;
-        }
-
-        for(int i=0; i<SIZE; ++i) {                         //PLAYER 1 MOSAIC ROWS
-            for(int j=0; j<SIZE; ++j) {
-                file << p1->mosaic[i][j] << " ";
-            }
-            file << std::endl;
-        }
-
-        for(int i=0; i<SIZE; ++i) {                         //PLAYER 2 MOSAIC ROWS
-            for(int j=0; j<SIZE; ++j) {
-                file << p2->mosaic[i][j] << " ";
-            }
-            file << std::endl;
-        }
-
-        for(int j=0; j<SIZE; ++j) {                         //PLAYER 1 STORAGE ROWS
-            for(int i=j; i>=0; --i) {
-                file << p1->storage[j][i] << " ";
-            }
-            file << std::endl;
-        }
-
-        for(int j=0; j<SIZE; ++j) {                         //PLAYER 2 STORAGE ROWS
-            for(int i=j; i>=0; --i) {
-                file << p2->storage[j][i] << " ";
-            }
-            file << std::endl;
-        }
-
-        for(int i=0; i < FLOOR_SIZE; ++i) {                 //PLAYER 1 BROKEN TILES
-            if(i<p1->getBroken()->getSize()){
-                file << p1->getBroken()->get(i) << " ";
-            }
-            else {
-                file << NO_TILE << " ";
-            }            
-        }
-        file << std::endl;
-
-        for(int i=0; i < FLOOR_SIZE; ++i) {                 //PLAYER 2 BROKEN TILES
-            if(i<p2->getBroken()->getSize()){
-                file << p2->getBroken()->get(i) << " ";
-            }
-            else {
-                file << NO_TILE << " ";
-            }    
-        }
-        file << std::endl;
-
-        file << "";                                         //BOX LID TILES
-        file << std::endl;
-        file << "";                                         //BAG TILES
-        file << std::endl;
-        file << "0";                                        //RANDOM SEED              
-                                                                                      
+void Game::saveGame() {            
+        SaveAndLoad* save = new SaveAndLoad(this,this->p1, this->p2, this->pile,
+                this->tileBag, this->boxLid, this->playerWithFPTile, this->currentPlayer);
+        save->saveGame();                                                                             
         saved = true;
-        std::cout << "\nGame successfully saved.\n\n";
-        file.close();
-    }
 
 }
 
 void Game::loadGame(std::istream& inputStream) {      
     
-    
     bool loadComplete = false;
 
-    Player* players[] = {this->p1,this->p2};
+    SaveAndLoad* load = new SaveAndLoad(this,this->p1, this->p2, this->pile,
+                this->tileBag, this->boxLid, this->playerWithFPTile, this->currentPlayer);
 
-    while(inputStream.good() && !loadComplete){
-        
-        std::string name; 
-        for(Player* player:players) {                       //SET PLAYER NAMES                   
-            inputStream >> name;                                
-            player->setName(name);
-        }
-
-        int points; 
-        for(Player* player:players) {                       //SET PLAYER POINTS                  
-            inputStream >> points;                                
-            player->setPoints(points);
-        }
-
-        std::string currentPlayer;
-        inputStream >> currentPlayer;                       //NEXT TURN
-        if(currentPlayer == name) {
-            this->currentPlayer = p2;
-        }
-        else {
-            this->currentPlayer = p1;
-        }
-        
-        inputStream.ignore();        
-        this->pile = new LinkedList;                        //FACTORY 0 (PILE)
-        std::string pileLine;
-        getline(inputStream, pileLine);
-        Tile pileTile;
-        std::stringstream ss(pileLine);
-        while(ss >> pileTile){
-            this->pile->addBack(pileTile);
-        } 
-
-        Tile factoryTile;                                   //FACTORIES
-        for(int i=0; i<FACTORIES; ++i) {
-            for(int j=0; j<FACTORY_SIZE; ++j) {
-                inputStream >> factoryTile;
-                this->factories[i][j] = factoryTile;
-            }
-        }
-
-        Tile mosaicTile;                                    
-        for(Player* player:players) {                     //SET MOSAIC ROWS
-            for(int i=1; i<SIZE+1; ++i) {                     
-                for(int j=0; j<SIZE; ++j) {
-                    inputStream >> mosaicTile;
-                    if(isupper(mosaicTile)) {
-                        player->moveToMosaic(i,mosaicTile);
-                    }
-                    else {
-                        player->moveToMosaic(i,NO_TILE);
-                    }
-                }
-            }
-        }
-        
-        LinkedList* toInsert = new LinkedList;              //SET STORAGE ROWS
-        char storageTile;
-        for(Player* player:players) {
-            for(int i=1; i<SIZE+1; ++i) {
-                for(int j=0; j<i; ++j) {
-                    inputStream >> storageTile;
-                    if(storageTile != NO_TILE){
-                        toInsert->addFront(storageTile);
-                    }                
-                }
-                if(toInsert->getSize()>0){
-                    player->addToStorage(i,toInsert,boxLid);
-                    toInsert->clear(); 
-                }
-            }
-        }
-    
-        Tile brokenTile;
-        for(Player* player:players) {                       //SET BROKEN TILES
-            for(int i=0; i<FLOOR_SIZE; i++) {                   
-                inputStream >> brokenTile;
-                if(brokenTile != NO_TILE){
-                    if(brokenTile == FIRST_PLAYER){
-                        playerWithFPTile = player;
-                    }
-                    player->getBroken()->addBack(brokenTile);
-                }            
-            }
-        }
-
-        inputStream.ignore();  
-        this->boxLid = new LinkedList;                      //BOX LID TILES
-        std::string boxLidLine;
-        getline(inputStream, boxLidLine);
-        Tile boxLidTile;
-        std::stringstream boxLidStream(boxLidLine);
-        while(boxLidStream >> boxLidTile){
-            this->boxLid->addBack(boxLidTile);
-        } 
-
-        inputStream.ignore();  
-        this->tileBag = new LinkedList;                     //BAG TILES
-        std::string tileBagLine;
-        getline(inputStream, tileBagLine);
-        Tile tileBagTile;
-        std::stringstream tileBagStream(tileBagLine);
-        while(tileBagStream >> tileBagTile){
-            this->tileBag->addBack(tileBagTile);
-        } 
-
-        int randomSeed;                                     //RANDOM SEED
-        inputStream >> randomSeed;
-
-        loadComplete = true;
-
+    while(inputStream.good() && !loadComplete) {
+        load->loadGame(inputStream);
     }
-    std::cout << "Game successfully loaded.\n\n";
     this->saved = true;
     this->resumed = true;
 
+}
+
+void Game::setFactory(int row, int column, Tile insert) {
+    this->factories[row][column] = insert;
+}
+Tile Game::getTileWithinFactory(int row, int column) {
+    return this->factories[row][column];
 }

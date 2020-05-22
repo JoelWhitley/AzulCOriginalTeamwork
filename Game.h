@@ -5,6 +5,7 @@
 #include "Rules.h"
 #include "LinkedList.h"
 
+
 class Game {
     
     public:
@@ -37,6 +38,8 @@ class Game {
         void printHelp();
         void saveGame();
         void loadGame(std::istream& filename);
+        void setFactory(int row, int column, Tile insert);
+        Tile getTileWithinFactory(int row,int column);
         
     private:
 
