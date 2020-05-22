@@ -110,7 +110,7 @@ void Player::addToStorage(int row, std::vector<Tile> toInsert, LinkedList* boxLi
             else {
                 boxLid->addBack(tile);
             }
-        }
+        } 
     }
     else {
         int count = this->countStorage(row,tile);

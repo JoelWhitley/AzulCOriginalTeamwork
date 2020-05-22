@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-class Player {
+class Player { 
 
     public:
 
