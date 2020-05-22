@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <vector>
 
 Game::Game(Player* p1, Player* p2, int seed) {
     this->p1 = p1;
@@ -167,7 +168,8 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
     saved = false;
     //TODO: prevent adding tiles to storage when that type of tile already exists in that row of the mosaic
 
-    LinkedList* found = new LinkedList();
+    // LinkedList* found = new LinkedList();
+    std::vector<Tile> found2;
     bool isValid = false;
     bool compatibleTileRow = false;
     int roomInRow;
@@ -189,11 +191,11 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
                 //if current tile is the player's chosen one
                 if(this->factories[factory-1][i] == tile){
                     if(row==FLOOR_ROW){ 
-                        found->addFront(factories[factory-1][i]);
+                        found2.push_back(factories[factory-1][i]);
                     }
                     //prepare specified tiles to be sent to storage (if there's room)
                     else if(roomInRow > 0) {
-                        found->addFront(factories[factory-1][i]);
+                        found2.push_back(factories[factory-1][i]);
                         roomInRow--;
                     }
                     //add excess to broken tiles
@@ -223,13 +225,13 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
                 int adjustedCount = i-counter;
                 if(this->pile->get(adjustedCount) == tile){
                     if(row==FLOOR_ROW){                    
-                        found->addFront(this->pile->get(adjustedCount));
+                        found2.push_back(this->pile->get(adjustedCount));
                         this->pile->removeNodeAtIndex(adjustedCount);
                         counter++;
                     }
                     //if there's still room in specified row, send it there
                     else if(roomInRow > 0) {
-                        found->addFront(this->pile->get(adjustedCount));
+                        found2.push_back(this->pile->get(adjustedCount));
                         this->pile->removeNodeAtIndex(adjustedCount);
                         roomInRow--;
                         counter++;
@@ -247,7 +249,7 @@ bool Game::turn(Player* p, int factory, Tile tile, int row) {
             isValid = true;
         }
         if(isValid){
-            p->addToStorage(row,found,boxLid);
+            p->addToStorage(row,found2,boxLid);
         }    
     }
     return isValid;

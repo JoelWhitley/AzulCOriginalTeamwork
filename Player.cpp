@@ -99,6 +99,34 @@ void Player::addToStorage(int row, LinkedList* toInsert, LinkedList* boxLid) {
     }
 }
 
+void Player::addToStorage(int row, std::vector<Tile> toInsert, LinkedList* boxLid) {
+    Tile tile = toInsert[0];    
+    if(row==FLOOR_ROW){
+        int count = getBroken()->getSize();
+        for(Tile tile : toInsert) {
+            if(count < FLOOR_SIZE) {
+                this->broken->addFront(tile);
+            }
+            else {
+                boxLid->addBack(tile);
+            }
+        }
+    }
+    else {
+        int count = this->countStorage(row,tile);
+        for(Tile tile : toInsert) {
+            if(count < row) {
+                this->storage[row-1][count] = tile;
+                ++count;
+            }
+            else {
+                this->broken->addFront(tile);
+                ++count;
+            }
+        }
+    }
+}
+
 void Player::printStorageLine(int row) {
     for(int i=row; i>=0; --i) {
         std::cout << this->storage[row][i];        

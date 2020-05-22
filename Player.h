@@ -4,6 +4,7 @@
 #include "LinkedList.h"
 #include "Rules.h"
 #include <iostream>
+#include <vector>
 
 class Player {
 
@@ -19,6 +20,7 @@ class Player {
         void addPoints(int points);
         int countStorage(int row, Tile tile);
         void addToStorage(int row, LinkedList* toInsert, LinkedList* boxLid);
+        void addToStorage(int row, std::vector<Tile> toInsert, LinkedList* boxLid);
         void initialiseBoard();
         void printStorageLine(int row);
         void printMosaicLine(int row);
