@@ -127,7 +127,7 @@ void Game::round() {
         gameEnd = true;
     }
     else {
-        std::cout << "---TILES DEPLETED!---" << std::endl;
+        std::cout << "---FACTORIES DEPLETED!---" << std::endl;
         std::cout << "---WALL TILING PHASE---" << std::endl;
         std::cout << "SCORES FOR " << p1->getName() << ":" << std::endl;
         moveTiles(p1); 
@@ -515,7 +515,7 @@ void Game::saveGame(){
         }
         for(Player* p : players){
             for(int i=0; i < FLOOR_SIZE; ++i) {             //PLAYER BROKEN TILES
-                if(i<p1->getBroken()->getSize()){
+                if(i<p->getBroken()->getSize()){
                     file << p->getBroken()->get(i) << " ";
                 }
                 else {
