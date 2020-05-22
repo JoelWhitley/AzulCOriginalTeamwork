@@ -151,7 +151,9 @@ void Game::endRound(){
             }
         }
         player->getBroken()->clear();
-        gameEnd = checkGameEnd(player);
+        if(checkGameEnd(player)){
+            gameEnd = true;
+        }
     }
 
     std::cout << "---END OF ROUND---" << std::endl;

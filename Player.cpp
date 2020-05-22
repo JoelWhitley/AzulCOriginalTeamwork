@@ -256,7 +256,7 @@ void Player::moveToMosaic(int row, Tile tile) {
 
 bool Player::checkComplete(int row) {
     bool completeRow = true;
-    for(int i = 0;i< SIZE;++i) {
+    for(int i=0; i<SIZE && completeRow; ++i) {
         if(this->mosaic[row][i] == NO_TILE) {
             completeRow = false;
         }
