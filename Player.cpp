@@ -1,6 +1,5 @@
 #include "Player.h"
 
-
 Player::Player(std::string name)
    : name(name), points(0), broken(new LinkedList()) {
        initialiseBoard();
@@ -272,4 +271,20 @@ bool Player::mosaicRowHasTile(int row, Tile tile){
         }
     }
     return hasTile;
+}
+
+void Player::setMosaicCell(int row, int col, Tile tile){
+    mosaic[row][col] = tile;
+}
+
+Tile Player::getMosaicCell(int row, int col){
+    return mosaic[row][col];
+}
+
+void Player::setStorageCell(int row, int col, Tile tile){
+    storage[row][col] = tile;
+}
+
+Tile Player::getStorageCell(int row, int col){
+    return storage[row][col];
 }

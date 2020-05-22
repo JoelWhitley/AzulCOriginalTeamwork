@@ -31,16 +31,18 @@ class Player {
         Tile getTile(int row);
         LinkedList* getBroken();
         bool checkComplete(int row);
-        Tile mosaic[SIZE][SIZE]; // Momentarily placed in public for testing
-        Tile** storage = new Tile*[SIZE];
+        Tile getMosaicCell(int row, int col);
+        void setMosaicCell(int row, int col, Tile tile);
+        void setStorageCell(int row, int col, Tile tile);
+        Tile getStorageCell(int row, int col);
         bool mosaicRowHasTile(int row, Tile tile);
 
     private:
-    
+        Tile** storage = new Tile*[SIZE];
+        Tile mosaic[SIZE][SIZE];
         std::string name;
         int points;
         LinkedList* broken;
-
 };
 
 #endif // AZUL_PLAYER
