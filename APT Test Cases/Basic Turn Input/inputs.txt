@@ -13,3 +13,6 @@ turn 0 b 4
 turn 0 y 3
 turn 0 u 5
 turn 0 u 5
+exit
+n
+4
