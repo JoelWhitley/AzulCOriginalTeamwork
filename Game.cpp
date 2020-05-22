@@ -464,6 +464,9 @@ void Game::saveGame(){
         std::cout << "Save aborted." << std::endl;
     }
     else { 
+
+        Player* players[] = {this->p1,this->p2};
+
         std::ofstream file;
         file.open(fileName);
 
@@ -475,8 +478,7 @@ void Game::saveGame(){
 
         for(int j=0; j<this->pile->getSize(); ++j){         //FACTORY 0 (PILE)
             file << pile->get(j) << " ";
-        }
-        
+        }        
         file << std::endl;
 
         for(int i=0; i<FACTORIES; ++i){                     //FACTORIES
@@ -485,60 +487,42 @@ void Game::saveGame(){
             }
             file << std::endl;
         }
-
-        for(int i=0; i<SIZE; ++i) {                         //PLAYER 1 MOSAIC ROWS
-            for(int j=0; j<SIZE; ++j) {
-                file << p1->mosaic[i][j] << " ";
+        for(Player* p : players){
+            for(int i=0; i<SIZE; ++i) {                     //PLAYER MOSAIC ROWS
+                for(int j=0; j<SIZE; ++j) {
+                    file << p->mosaic[i][j] << " ";
+                }
+                file << std::endl;
             }
-            file << std::endl;
         }
-
-        for(int i=0; i<SIZE; ++i) {                         //PLAYER 2 MOSAIC ROWS
-            for(int j=0; j<SIZE; ++j) {
-                file << p2->mosaic[i][j] << " ";
+        for(Player* p : players){
+            for(int j=0; j<SIZE; ++j) {                     //PLAYER STORAGE ROWS
+                for(int i=j; i>=0; --i) {
+                    file << p->storage[j][i] << " ";
+                }
+                file << std::endl;
             }
-            file << std::endl;
         }
-
-        for(int j=0; j<SIZE; ++j) {                         //PLAYER 1 STORAGE ROWS
-            for(int i=j; i>=0; --i) {
-                file << p1->storage[j][i] << " ";
-            }
-            file << std::endl;
-        }
-
-        for(int j=0; j<SIZE; ++j) {                         //PLAYER 2 STORAGE ROWS
-            for(int i=j; i>=0; --i) {
-                file << p2->storage[j][i] << " ";
-            }
-            file << std::endl;
-        }
-
-        for(int i=0; i < FLOOR_SIZE; ++i) {                 //PLAYER 1 BROKEN TILES
-            if(i<p1->getBroken()->getSize()){
-                file << p1->getBroken()->get(i) << " ";
-            }
-            else {
-                file << NO_TILE << " ";
-            }            
-        }
-        file << std::endl;
-
-        for(int i=0; i < FLOOR_SIZE; ++i) {                 //PLAYER 2 BROKEN TILES
-            if(i<p2->getBroken()->getSize()){
-                file << p2->getBroken()->get(i) << " ";
-            }
-            else {
-                file << NO_TILE << " ";
+        for(Player* p : players){
+            for(int i=0; i < FLOOR_SIZE; ++i) {             //PLAYER BROKEN TILES
+                if(i<p1->getBroken()->getSize()){
+                    file << p->getBroken()->get(i) << " ";
+                }
+                else {
+                    file << NO_TILE << " ";
+                }            
             }    
+            file << std::endl;   
+        }            
+        for(int i=0; i<boxLid->getSize(); i++){             //BOX LID TILES
+            file << boxLid->get(i) << " ";
         }
         file << std::endl;
-
-        file << "";                                         //BOX LID TILES
+        for(int i=0; i<tileBag->getSize(); i++){            //BAG TILES            
+            file << tileBag->get(i) << " ";
+        }                       
         file << std::endl;
-        file << "";                                         //BAG TILES
-        file << std::endl;
-        file << "0";                                        //RANDOM SEED              
+        file << "0";                                        //RANDOM SEED (unimplemented)              
                                                                                       
         saved = true;
         std::cout << "\nGame successfully saved.\n\n";
@@ -596,7 +580,7 @@ void Game::loadGame(std::istream& inputStream) {
         }
 
         Tile mosaicTile;                                    
-        for(Player* player:players) {                     //SET MOSAIC ROWS
+        for(Player* player:players) {                       //SET MOSAIC ROWS
             for(int i=1; i<SIZE+1; ++i) {                     
                 for(int j=0; j<SIZE; ++j) {
                     inputStream >> mosaicTile;
