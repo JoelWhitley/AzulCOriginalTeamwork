@@ -18,7 +18,8 @@ turn 0 U 5
 turn 0 B 5
 turn 1 R 2
 turn 0 B 6
-save endGame
+save
+endGame
 exit
 4
 
