@@ -167,7 +167,7 @@ void Game::endGame(){
 
     if(!isTie){
         winner = p1->getPoints()>p2->getPoints()?p1:p2;
-        std::cout << "!!! " << winner->getName() << " wins with " << winner->getPoints() << "points !!!" << std::endl;
+        std::cout << "!!! " << winner->getName() << " wins with " << winner->getPoints() << " points !!!" << std::endl;
     }    
     else{
         std::cout << "!!! GAME TIED !!!";
