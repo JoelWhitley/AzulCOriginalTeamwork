@@ -83,7 +83,7 @@ void newGame() {
 
     game = new Game(player1, player2, 0);
     std::cout << std::endl << player1->getName() << ", " << player2->getName() << ", let's play AZUL!\n\n";
-    game->setupGame();
+    game->generateTileBag(0);
     game->play();
     
 }
@@ -106,7 +106,6 @@ void loadGame() {
             Player* player1 = new Player("");
             Player* player2 = new Player("");
             game = new Game(player1, player2, 0); 
-            game->setupGame();
             game->loadGame(filein);
             game->play();
         }

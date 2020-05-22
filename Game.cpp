@@ -1,22 +1,15 @@
 #include "Game.h"
 #include "SaveAndLoad.h"
 
-Game::Game(Player* p1, Player* p2, int seed) {
-    this->p1 = p1;
-    this->p2 = p2;
+Game::Game(Player* p1, Player* p2, int seed) : p1(p1), p2(p2) {
+    pile = new LinkedList();
+    tileBag = new LinkedList();
+    boxLid = new LinkedList();
     playerWithFPTile = p1;
+    currentPlayer = playerWithFPTile;
 }
 Game::~Game() {
     delete this;
-}
-
-void Game::setupGame(){
-    this->pile = new LinkedList();
-    this->tileBag = new LinkedList();
-    this->currentPlayer = playerWithFPTile;
-    this->boxLid = new LinkedList();
-    generateTileBag(0);
-    saved=true;
 }
 
 void Game::setupRound() {    
@@ -79,6 +72,7 @@ Tile Game::randomTile() {
 //-------------------GAMEPLAY LOOP LOGIC-----------------
 
 void Game::play() {
+    saved=true;
     gameEnd = false;
     while(!gameEnd){
         round();
