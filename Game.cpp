@@ -552,19 +552,21 @@ void Game::loadGame(std::istream& inputStream) {
     
     bool loadComplete = false;
 
+    Player* players[] = {this->p1,this->p2};
+
     while(inputStream.good() && !loadComplete){
         
         std::string name; 
-        inputStream >> name;
-        this->p1->setName(name);                            //PLAYER 1 NAME
-        inputStream >> name;                                //PLAYER 2 NAME
-        this->p2->setName(name);
+        for(Player* player:players) {                       //SET PLAYER NAMES                   
+            inputStream >> name;                                
+            player->setName(name);
+        }
 
         int points; 
-        inputStream >> points;                              //PLAYER 1 POINTS
-        this->p1->setPoints(points);
-        inputStream >> points;                              //PLAYER 2 POINTS
-        this->p2->setPoints(points);
+        for(Player* player:players) {                       //SET PLAYER POINTS                  
+            inputStream >> points;                                
+            player->setPoints(points);
+        }
 
         std::string currentPlayer;
         inputStream >> currentPlayer;                       //NEXT TURN
@@ -593,77 +595,49 @@ void Game::loadGame(std::istream& inputStream) {
             }
         }
 
-        Tile mosaicTile;                                    //PLAYER 1 MOSAIC ROWS
-        for(int i=1; i<SIZE+1; ++i) {
-            for(int j=0; j<SIZE; ++j) {
-                inputStream >> mosaicTile;
-                if(isupper(mosaicTile)) {
-                    p1->moveToMosaic(i,mosaicTile);
-                }
-                else {
-                    p1->moveToMosaic(i,NO_TILE);
-                }
-            }
-        }
-        for(int i=1; i<SIZE+1; ++i) {                       //PLAYER 2 MOSAIC ROWS
-            for(int j=0; j<SIZE; ++j) {
-                inputStream >> mosaicTile;
-                if(isupper(mosaicTile)) {
-                    p2->moveToMosaic(i,mosaicTile);
-                }
-                else {
-                    p2->moveToMosaic(i,NO_TILE);
+        Tile mosaicTile;                                    
+        for(Player* player:players) {                     //SET MOSAIC ROWS
+            for(int i=1; i<SIZE+1; ++i) {                     
+                for(int j=0; j<SIZE; ++j) {
+                    inputStream >> mosaicTile;
+                    if(isupper(mosaicTile)) {
+                        player->moveToMosaic(i,mosaicTile);
+                    }
+                    else {
+                        player->moveToMosaic(i,NO_TILE);
+                    }
                 }
             }
         }
         
-        LinkedList* toInsert = new LinkedList;              //PLAYER 1 STORAGE ROWS
+        LinkedList* toInsert = new LinkedList;              //SET STORAGE ROWS
         char storageTile;
-        for(int i=1; i<SIZE+1; ++i) {
-            for(int j=0; j<i; ++j) {
-                inputStream >> storageTile;
-                if(storageTile != NO_TILE){
-                    toInsert->addFront(storageTile);
-                }                
-            }
-            if(toInsert->getSize()>0){
-                p1->addToStorage(i,toInsert,boxLid);
-                toInsert->clear(); 
-            }
-        }
-
-        for(int i=1; i<SIZE+1; ++i) {                       //PLAYER 2 STORAGE ROWS
-            for(int j=0; j<i; ++j) {
-                inputStream >> storageTile;
-                if(storageTile != NO_TILE){
-                    toInsert->addFront(storageTile);
-                } 
-            }
-            if(toInsert->getSize()>0){
-                p2->addToStorage(i,toInsert,boxLid);
-                toInsert->clear(); 
+        for(Player* player:players) {
+            for(int i=1; i<SIZE+1; ++i) {
+                for(int j=0; j<i; ++j) {
+                    inputStream >> storageTile;
+                    if(storageTile != NO_TILE){
+                        toInsert->addFront(storageTile);
+                    }                
+                }
+                if(toInsert->getSize()>0){
+                    player->addToStorage(i,toInsert,boxLid);
+                    toInsert->clear(); 
+                }
             }
         }
     
         Tile brokenTile;
-        for(int i=0; i<FLOOR_SIZE; i++) {                   //PLAYER 1 BROKEN TILES
-            inputStream >> brokenTile;
-            if(brokenTile != NO_TILE){
-                if(brokenTile == FIRST_PLAYER){
-                    playerWithFPTile = p1;
-                }
-                this->p1->getBroken()->addBack(brokenTile);
-            }            
-        }
-
-        for(int i=0; i<FLOOR_SIZE; i++) {                   //PLAYER 2 BROKEN TILES
-            inputStream >> brokenTile;
-            if(brokenTile != NO_TILE){
-                if(brokenTile == FIRST_PLAYER){
-                    playerWithFPTile = p2;
-                }
-                this->p2->getBroken()->addBack(brokenTile);
-            }  
+        for(Player* player:players) {                       //SET BROKEN TILES
+            for(int i=0; i<FLOOR_SIZE; i++) {                   
+                inputStream >> brokenTile;
+                if(brokenTile != NO_TILE){
+                    if(brokenTile == FIRST_PLAYER){
+                        playerWithFPTile = player;
+                    }
+                    player->getBroken()->addBack(brokenTile);
+                }            
+            }
         }
 
         inputStream.ignore();  
