@@ -4,6 +4,12 @@
 #include "Player.h"
 #include "Rules.h"
 #include "LinkedList.h"
+#include <string>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+
 
 class Game {
     
@@ -54,6 +60,15 @@ class Game {
         LinkedList* boxLid;
         LinkedList* tileBag;
         bool resumed;
+
+        // User input outcomes
+        enum outcome { 
+        OUTCOME_TURNSUCCESS,
+        OUTCOME_TURNFAIL,
+        OUTCOME_SAVE,
+        OUTCOME_EXIT,
+        OUTCOME_INVALID,
+        };
 
 };
 

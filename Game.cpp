@@ -1,11 +1,5 @@
 #include "Game.h"
 
-#include <string>
-#include <iostream>
-#include <fstream>
-#include <sstream>
-#include <vector>
-
 Game::Game(Player* p1, Player* p2, int seed) {
     this->p1 = p1;
     this->p2 = p2;
@@ -112,7 +106,7 @@ void Game::round() {
             switchPlayer();
         }
         else if(outcome == OUTCOME_TURNFAIL){ 
-            std::cout << "Turn failed, please try something else." << std::endl;
+            std::cout << "Turn failed, please try something else.\n" << std::endl;
         }  
         else if(outcome == OUTCOME_EXIT){
             exit = true;
@@ -165,6 +159,7 @@ void Game::endRound(){
 
 void Game::endGame(){
 
+    std::cout << "!!! ROW COMPLETED !!!\n";
     if(!isTie){
         winner = p1->getPoints()>p2->getPoints()?p1:p2;
         std::cout << "!!! " << winner->getName() << " wins with " << winner->getPoints() << " points !!!" << std::endl;
@@ -469,7 +464,7 @@ void Game::saveGame(){
 
     std::string fileName;
     std::cout << "\nEnter a name for the save file (or leave blank to cancel):";
-    getline(std::cin, fileName);
+    fileName = userInput();
     if(fileName.empty()){
         std::cout << "Save aborted." << std::endl;
     }

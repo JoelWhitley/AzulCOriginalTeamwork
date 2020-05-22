@@ -27,13 +27,4 @@ static const Tile tileSelection[SIZE] = {RED,YELLOW,BLUE,LIGHT_BLUE,BLACK};
 static const Tile topRowOrder[SIZE]   = {BLUE,YELLOW,RED,BLACK,LIGHT_BLUE};
 static const int demerits[FLOOR_SIZE+1] = {0, -1, -2, -4, -6, -8, -11, -14};
 
-// User input outcomes
-enum outcome { 
-    OUTCOME_TURNSUCCESS,
-    OUTCOME_TURNFAIL,
-    OUTCOME_SAVE,
-    OUTCOME_EXIT,
-    OUTCOME_INVALID,
-};
-
 #endif // AZUL_RULES
