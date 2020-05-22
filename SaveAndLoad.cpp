@@ -23,8 +23,8 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
     while(inputStream.good() && !loadComplete){
         
         std::string name; 
-        for(Player* player:players) {                       //SET PLAYER NAMES                   
-            inputStream >> name;                                
+        for(Player* player:players) {                       //SET PLAYER NAMES   
+            getline(inputStream, name);                                               
             player->setName(name);
         }
 
@@ -35,7 +35,8 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
         }
 
         std::string currentPlayerName;
-        inputStream >> currentPlayerName;                   //NEXT TURN
+        getline(inputStream, currentPlayerName);
+        getline(inputStream, currentPlayerName);            //NEXT TURN
         if(currentPlayerName == name) {
             game->setCurrentPlayer(p2);
         }
@@ -43,8 +44,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
             game->setCurrentPlayer(p1);
         }
         
-        inputStream.ignore();                               //FACTORY 0 (PILE)
-        std::string pileLine;
+        std::string pileLine;                               //FACTORY 0 (PILE)
         getline(inputStream, pileLine);
         Tile pileTile;
         std::stringstream ss(pileLine);
