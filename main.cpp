@@ -106,6 +106,7 @@ void loadGame() {
             Player* player1 = new Player("");
             Player* player2 = new Player("");
             game = new Game(player1, player2, 0); 
+            game->setup();
             game->loadGame(filein);
             game->play();
         }

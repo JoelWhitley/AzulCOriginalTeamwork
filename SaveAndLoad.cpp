@@ -43,8 +43,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
             this->currentPlayer = p1;
         }
         
-        inputStream.ignore();        
-        pile = new LinkedList;                        //FACTORY 0 (PILE)
+        inputStream.ignore();                               //FACTORY 0 (PILE)
         std::string pileLine;
         getline(inputStream, pileLine);
         Tile pileTile;
@@ -62,7 +61,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
         }
 
         Tile mosaicTile;                                    
-        for(Player* player:players) {                     //SET MOSAIC ROWS
+        for(Player* player:players) {                       //SET MOSAIC ROWS
             for(int i=1; i<SIZE+1; ++i) {                     
                 for(int j=0; j<SIZE; ++j) {
                     inputStream >> mosaicTile;
@@ -107,7 +106,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
         }
 
         inputStream.ignore();  
-        boxLid = new LinkedList;                      //BOX LID TILES
+        boxLid = new LinkedList;                            //BOX LID TILES
         std::string boxLidLine;
         getline(inputStream, boxLidLine);
         Tile boxLidTile;
@@ -117,7 +116,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
         } 
 
         inputStream.ignore();  
-        tileBag = new LinkedList;                     //BAG TILES
+        tileBag = new LinkedList;                           //BAG TILES
         std::string tileBagLine;
         getline(inputStream, tileBagLine);
         Tile tileBagTile;
@@ -196,9 +195,13 @@ void SaveAndLoad::saveGame(){
             file << std::endl;  
         }
  
-        file << "";                                         //BOX LID TILES
-        file << std::endl;
-        file << "";                                         //BAG TILES
+        for(int i=0; i<boxLid->getSize(); i++){             //BOX LID TILES
+            file << boxLid->get(i) << " ";
+        }                                        
+        file << std::endl;         
+        for(int i=0; i<tileBag->getSize(); i++){            //BAG TILES
+            file << tileBag->get(i) << " ";
+        }                                                   //BAG TILES
         file << std::endl;
         file << "0";                                        //RANDOM SEED              
                                                                                      
