@@ -162,13 +162,18 @@ void SaveAndLoad::saveGame(){
             }
             file << std::endl;
         }
-        for(Player* p : players){
-            for(int i=0; i<SIZE; ++i) {                     //PLAYER MOSAIC ROWS
+        for(Player* p : players){                           //PLAYER MOSAIC ROWS
+            for(int i=0; i<SIZE; ++i) {         
                 for(int j=0; j<SIZE; ++j) {
-                    file << p->getMosaicCell(i,j) << " ";
+                    if(p->getMosaicCell(i,j) == NO_TILE){
+                        file << (char)tolower(topRowOrder[(((j-i) % SIZE) + SIZE) % SIZE]) << " ";
+                    }
+                    else {
+                        file << p->getMosaicCell(i,j) << " ";
+                    }                    
                 }
                 file << std::endl;
-            }
+            }            
         }
         for(Player* p : players){
             for(int j=0; j<SIZE; ++j) {                     //PLAYER STORAGE ROWS
