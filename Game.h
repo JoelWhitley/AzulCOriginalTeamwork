@@ -10,15 +10,14 @@
 #include <sstream>
 #include <vector>
 
-
-
 class Game {
     
     public:
     
         Game(Player* p1, Player* p2, int seed);
         ~Game();
-        void setup();
+        void setupGame();
+        void setupRound();
         void generateFactories();
         void generateTileBag(int seed);
         Tile getTileFromBag();

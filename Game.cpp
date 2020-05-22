@@ -10,15 +10,19 @@ Game::~Game() {
     delete this;
 }
 
-void Game::setup() {
+void Game::setupGame(){
     this->pile = new LinkedList();
-    pile->addFront(FIRST_PLAYER);
     this->tileBag = new LinkedList();
-    generateTileBag(0);
+    this->currentPlayer = playerWithFPTile;
     this->boxLid = new LinkedList();
+    generateTileBag(0);
+    saved=true;
+}
+
+void Game::setupRound() {    
+    pile->addFront(FIRST_PLAYER);   
     this->currentPlayer = playerWithFPTile;    
-    generateFactories();   
-    saved=true; 
+    generateFactories();
 }
 
 void Game::generateTileBag(int seed){
@@ -87,7 +91,7 @@ void Game::round() {
     bool exit = false;
     bool roundEnd = false;
     if(!resumed){
-        generateFactories();
+        setupRound();
     }
     resumed = false;
 
@@ -139,21 +143,27 @@ void Game::round() {
 
 void Game::endRound(){
 
-    //at the end of the round, one of the two players has to have the FP tile.
-    if(p1->getBroken()->contains(FIRST_PLAYER)){
-        playerWithFPTile = p1;
+    //empty broken tiles into boxLid, make note of who has the FP tile for next round
+    //while there, check for endgame condition in each players' mosaic
+    Player* players[] = {p1, p2};
+    for(Player* player : players){
+        for(int i=0; i<player->getBroken()->getSize(); i++){
+            if(player->getBroken()->get(i)==FIRST_PLAYER){
+                playerWithFPTile = player;
+                player->getBroken()->removeNodeAtIndex(i);
+            }
+            else {
+                boxLid->addBack(player->getBroken()->get(i));
+            }
+        }
+        player->getBroken()->clear();
+        gameEnd = checkGameEnd(player);
     }
-    else {
-        playerWithFPTile = p2;
-    }    
-    p1->getBroken()->clear();
-    p2->getBroken()->clear();
 
     std::cout << "---END OF ROUND---" << std::endl;
 
-    if(this->checkGameEnd(p1) == true || this->checkGameEnd(p2) == true){
-        endGame();
-        gameEnd = true;        
+    if(gameEnd){
+        endGame();     
     }  
 
 }

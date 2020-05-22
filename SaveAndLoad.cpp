@@ -34,13 +34,13 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
             player->setPoints(points);
         }
 
-        std::string currentPlayer;
-        inputStream >> currentPlayer;                       //NEXT TURN
-        if(currentPlayer == name) {
-            this->currentPlayer = p2;
+        std::string currentPlayerName;
+        inputStream >> currentPlayerName;                       //NEXT TURN
+        if(currentPlayerName == name) {
+            currentPlayer = p2;
         }
         else {
-            this->currentPlayer = p1;
+            currentPlayer = p1;
         }
         
         inputStream.ignore();                               //FACTORY 0 (PILE)
@@ -105,8 +105,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
             }
         }
 
-        inputStream.ignore();  
-        boxLid = new LinkedList;                            //BOX LID TILES
+        inputStream.ignore();                              //BOX LID TILES
         std::string boxLidLine;
         getline(inputStream, boxLidLine);
         Tile boxLidTile;
@@ -115,8 +114,7 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
             boxLid->addBack(boxLidTile);
         } 
 
-        inputStream.ignore();  
-        tileBag = new LinkedList;                           //BAG TILES
+        inputStream.ignore();                              //BAG TILES
         std::string tileBagLine;
         getline(inputStream, tileBagLine);
         Tile tileBagTile;

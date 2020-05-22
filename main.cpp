@@ -83,7 +83,7 @@ void newGame() {
 
     game = new Game(player1, player2, 0);
     std::cout << std::endl << player1->getName() << ", " << player2->getName() << ", let's play AZUL!\n\n";
-    game->setup();
+    game->setupGame();
     game->play();
     
 }
@@ -92,7 +92,7 @@ void loadGame() {
 
     Game* game;
     std::string filename;
-    std::cout << "Input a filename to load from (or leave blank to cancel):\n>";
+    std::cout << "Input a filename to load from (or leave blank to cancel):\n";
     filename = userInput();
     if(filename.empty()){
         std::cout << "Load aborted." << std::endl;
@@ -106,7 +106,7 @@ void loadGame() {
             Player* player1 = new Player("");
             Player* player2 = new Player("");
             game = new Game(player1, player2, 0); 
-            game->setup();
+            game->setupGame();
             game->loadGame(filein);
             game->play();
         }
