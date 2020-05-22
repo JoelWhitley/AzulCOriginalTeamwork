@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
 
 #include "Player.h"
 #include "Game.h"
@@ -9,6 +10,7 @@ void mainMenu();
 void newGame();
 void printCredits();
 void loadGame();
+std::string userPrompt();
 
 bool running;
 std::string player1Name;
@@ -18,6 +20,7 @@ int player2Score;
 std::string player1ScoreString = "";
 std::string player2ScoreString = "";
 std::string nextTurn;
+std::string userInput();
 
 int main() {
 
@@ -33,17 +36,15 @@ int main() {
 
 void mainMenu() {
 
-	int choice = 0;
-	
 	std::cout << "*** Welcome to 🅰 🆉 🆄 🅻 ***" << std::endl;
 	std::cout << "(1): New Game" << std::endl;
     std::cout << "(2): Load Game" << std::endl;
     std::cout << "(3): Credits" << std::endl;
     std::cout << "(4): Exit" << std::endl;
-    std::cout << ">";
-	std::cin >> choice;
-    std::cin.clear();
-    std::cin.ignore();
+    std::string input = userInput();
+    std::stringstream ss(input);
+    int choice = 0;
+    ss >> choice;
     	  
 	if(choice == 1) {
         newGame();
@@ -72,11 +73,11 @@ void newGame() {
     std::string player2name;
     Game* game;
 
-    std::cout << "Enter a name for Player 1:\n>";
-    getline(std::cin, player1name);
-    std::cout << "Enter a name for Player 2:\n>";
-    getline(std::cin, player2name);
-
+    std::cout << "Enter a name for Player 1:\n";
+    player1name = userInput();
+    std::cout << "Enter a name for Player 2:\n";
+    player2name = userInput();
+    
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
@@ -92,7 +93,7 @@ void loadGame() {
     Game* game;
     std::string filename;
     std::cout << "Input a filename to load from (or leave blank to cancel):\n>";
-    getline(std::cin, filename);
+    filename = userInput();
     if(filename.empty()){
         std::cout << "Load aborted." << std::endl;
     }
@@ -122,5 +123,20 @@ void printCredits() {
     << "s3837218 Dinesh Premanath Amarakone Urulugastenne Mudiyanselage\n" << std::endl;
 
     return;
+
+}
+
+std::string userInput(){
+
+    std::string input;
+    std::cout << "> "; 
+    getline(std::cin, input);
+    if(std::cin.eof()){
+        std::cout << "Goodbye." << std::endl;
+        exit(EXIT_SUCCESS);
+    }  
+    std::cin.clear();
+
+    return input;
 
 }

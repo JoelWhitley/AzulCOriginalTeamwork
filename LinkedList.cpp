@@ -154,7 +154,7 @@ bool LinkedList::contains(char input){
 void LinkedList::print() {
     Node* current = this->head;
     while(current != nullptr) {
-        std::cout << current->value << ",";
+        std::cout << current->value << " ";
         current = current->next;
     }
 }
