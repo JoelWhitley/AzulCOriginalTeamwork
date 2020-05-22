@@ -22,6 +22,7 @@ class Game {
         int userInput(Player* p);
         void round();
         void endRound();
+        void endGame();
         bool turn(Player* p, int factory, Tile tile, int row);
 
         void printBoard(Player* p);
@@ -42,11 +43,13 @@ class Game {
         Player* p1;
         Player* p2;
         Player* currentPlayer;
+        Player* winner;
         Tile factories[FACTORIES][FACTORY_SIZE];
         LinkedList* pile;
         Player* playerWithFPTile;
         bool saved;
         bool gameEnd;
+        bool isTie;
         LinkedList* boxLid;
         LinkedList* tileBag;
         bool resumed;
