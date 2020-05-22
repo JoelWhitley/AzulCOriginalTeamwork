@@ -173,7 +173,7 @@ void SaveAndLoad::saveGame(){
         for(Player* p : players){
             for(int j=0; j<SIZE; ++j) {                     //PLAYER STORAGE ROWS
                 for(int i=j; i>=0; --i) {
-                    file << p->storage[j][i] << " ";
+                    file << p->storage[j][j-i] << " ";
                 }
                 file << std::endl;
             }
