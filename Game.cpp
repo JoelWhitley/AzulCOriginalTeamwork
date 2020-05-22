@@ -490,7 +490,7 @@ void Game::setCurrentPlayer(Player* p){
 }
 
 void Game::setPlayerWithFPTile(Player* p){
-
+    playerWithFPTile = p;
 }
 
 void Game::setFactory(int row, int column, Tile insert) {
