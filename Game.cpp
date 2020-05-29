@@ -1,12 +1,14 @@
 #include "Game.h"
 #include "SaveAndLoad.h"
+#include "AI.h"
 
-Game::Game(Player* p1, Player* p2, int seed) : p1(p1), p2(p2) {
+Game::Game(Player* p1, Player* p2, int seed, bool isAI) : p1(p1), p2(p2) {
     pile = new LinkedList();
     tileBag = new LinkedList();
     boxLid = new LinkedList();
     playerWithFPTile = p1;
     currentPlayer = playerWithFPTile;
+    this->isAI = isAI;
 }
 Game::~Game() {
     delete this;
@@ -74,6 +76,8 @@ Tile Game::randomTile() {
 void Game::play() {
     saved=true;
     gameEnd = false;
+    
+    
     while(!gameEnd){
         round();
     }
@@ -81,7 +85,10 @@ void Game::play() {
 }
 
 void Game::round() {
-
+    AI* aiController = nullptr;
+    if(this->isAI) {
+        aiController = new AI(p1,p2,this);
+    }
     bool exit = false;
     bool roundEnd = false;
     if(!resumed){
@@ -97,7 +104,20 @@ void Game::round() {
         std::cout << this->currentPlayer->getName() << "'s board:" << std::endl;
         printBoard(this->currentPlayer);
 
-        int outcome = turnPrompt(this->currentPlayer);       
+        int outcome = OUTCOME_INVALID;
+        if(!this->isAI) {
+            outcome = turnPrompt(this->currentPlayer);
+        }
+        else {
+            if(currentPlayer == p1) {
+                outcome = turnPrompt(this->currentPlayer);
+            }
+
+            // put ai implementation here
+            else {
+                outcome = aiController->makeTurn();
+            }
+        }       
         if(outcome == OUTCOME_TURNSUCCESS) {
             std::cout << "\nSuccess! " << this->currentPlayer->getName() << "'s new board:" << std::endl;
             printBoard(this->currentPlayer); 

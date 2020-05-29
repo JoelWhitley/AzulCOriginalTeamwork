@@ -10,6 +10,7 @@ void mainMenu();
 void newGame();
 void printCredits();
 void loadGame();
+void aiGame();
 std::string userPrompt();
 
 bool running;
@@ -40,7 +41,8 @@ void mainMenu() {
 	std::cout << "(1): New Game" << std::endl;
     std::cout << "(2): Load Game" << std::endl;
     std::cout << "(3): Credits" << std::endl;
-    std::cout << "(4): Exit" << std::endl;
+    std::cout << "(4): AI Game" << std::endl;
+    std::cout << "(5): Exit" << std::endl;
     std::string input = userInput();
     std::stringstream ss(input);
     int choice = 0;
@@ -56,6 +58,9 @@ void mainMenu() {
 		printCredits();
     }
     else if(choice == 4) {
+        aiGame();
+    }
+    else if(choice == 5) {
         std::cout << "Goodbye." << std::endl;
         running = false;
     }
@@ -81,7 +86,7 @@ void newGame() {
     Player* player1 = new Player(player1name);
     Player* player2 = new Player(player2name);
 
-    game = new Game(player1, player2, 0);
+    game = new Game(player1, player2, 0,false);
     std::cout << std::endl << player1->getName() << ", " << player2->getName() << ", let's play AZUL!\n\n";
     game->generateTileBag(0);
     game->play();
@@ -105,12 +110,31 @@ void loadGame() {
         else if(filein.good()) {
             Player* player1 = new Player("");
             Player* player2 = new Player("");
-            game = new Game(player1, player2, 0); 
+            game = new Game(player1, player2, 0,false); 
             game->loadGame(filein);
             game->play();
         }
     }
 
+}
+
+void aiGame() {
+    std::string player1name;
+    std::string player2name;
+    Game* game;
+
+    std::cout << "Enter a name for Player 1:\n";
+    player1name = userInput();
+    std::cout << "Enter a name for the bot:\n";
+    player2name = userInput();
+    
+    Player* player1 = new Player(player1name);
+    Player* player2 = new Player(player2name);
+
+    game = new Game(player1, player2, 0,true);
+    std::cout << std::endl << player1->getName() << ", let's play AZUL!\n\n";
+    game->generateTileBag(0);
+    game->play();
 }
 
 void printCredits() {

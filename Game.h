@@ -14,7 +14,7 @@ class Game {
     
     public:
     
-        Game(Player* p1, Player* p2, int seed);
+        Game(Player* p1, Player* p2, int seed, bool isAI);
         ~Game();
         void setupGame();
         void setupRound();
@@ -53,6 +53,7 @@ class Game {
 
         Player* p1;
         Player* p2;
+        bool isAI;
         Player* currentPlayer;
         Player* winner;
         Tile factories[FACTORIES][FACTORY_SIZE];
