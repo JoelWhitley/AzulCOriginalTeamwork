@@ -2,6 +2,7 @@
 #include "SaveAndLoad.h"
 #include "AI.h"
 
+
 Game::Game(Player* p1, Player* p2, int seed, bool isAI) : p1(p1), p2(p2) {
     pile = new LinkedList();
     tileBag = new LinkedList();
@@ -521,4 +522,28 @@ void Game::setFactory(int row, int column, Tile insert) {
 
 Tile Game::getTileWithinFactory(int row, int column) {
     return this->factories[row][column];
+}
+
+std::vector<std::tuple<int,Tile> > Game::availableTiles(Player* p) {
+    std::vector<std::tuple<int,Tile> > moves = std::vector<std::tuple<int,Tile>>();
+
+    //scan the factories for avaiable tiles and their respective factory numbers
+    for(int i=0;i<SIZE;++i) {
+        if(factories[i][0] != NO_TILE) {
+            for(int j = 0;j<FACTORY_SIZE;++j) {
+                auto avaiableTile = std::make_tuple(i + 1,factories[i][j]);
+                moves.push_back(avaiableTile);
+            }
+        }
+    }
+
+    //scan the pile for available tiles
+    for(int i = 0;i<pile->getSize();++i) {
+        if(pile->get(i) != FIRST_PLAYER) {
+            auto avaiableTile = std::make_tuple(0,pile->get(i));
+            moves.push_back(avaiableTile);
+        }
+    }
+    
+    return moves;
 }
