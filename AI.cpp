@@ -22,6 +22,12 @@ int AI::makeTurn() {
     
     while(!foundValidLocation) {
         Tile toCheck = std::get<1>(currentTuple);
+
+        /*check the two conditions to make the turn valid, being that the storage doesn't already have a different tile in it
+        * and that the corresponding mosaic row doesn't already have the tile filed in. 
+        * Checking getStorageCell at storageRow-1,0 is the only check needed as if this spot doesn't contain a tile then the rest
+        * of it won't.
+        */
         if(controlled->mosaicRowHasTile(storageRow,toCheck) == false && controlled->getStorageCell(storageRow - 1,0) == NO_TILE) {
             foundValidLocation = true;
         }
