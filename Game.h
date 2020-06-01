@@ -49,7 +49,7 @@ class Game {
         void setCurrentPlayer(Player* p);
         void setPlayerWithFPTile(Player* p);
         Tile getTileWithinFactory(int row, int column);
-        std::vector<std::tuple<int,Tile> > availableTiles(Player* p);
+        std::vector<std::tuple<int,Tile,int> > availableTiles(Player* p);
         
     private:
 

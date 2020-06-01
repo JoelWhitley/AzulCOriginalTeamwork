@@ -524,26 +524,37 @@ Tile Game::getTileWithinFactory(int row, int column) {
     return this->factories[row][column];
 }
 
-std::vector<std::tuple<int,Tile> > Game::availableTiles(Player* p) {
-    std::vector<std::tuple<int,Tile> > moves = std::vector<std::tuple<int,Tile>>();
+std::vector<std::tuple<int,Tile,int> > Game::availableTiles(Player* p) {
+    std::vector<std::tuple<int,Tile,int> > moves = std::vector<std::tuple<int,Tile,int>>();
 
     //scan the factories for avaiable tiles and their respective factory numbers
     for(int i=0;i<SIZE;++i) {
-        if(factories[i][0] != NO_TILE) {
+        for(Tile t:tileSelection) {
+            int count = 0;
             for(int j = 0;j<FACTORY_SIZE;++j) {
-                auto avaiableTile = std::make_tuple(i + 1,factories[i][j]);
-                moves.push_back(avaiableTile);
+                if(factories[i][j] == t) {
+                    ++count;
+                }
+            }
+            if(count > 0){
+                auto availableTile = std::make_tuple(i+1,t,count);
+                moves.push_back(availableTile);
             }
         }
     }
 
-    //scan the pile for available tiles
-    for(int i = 0;i<pile->getSize();++i) {
-        if(pile->get(i) != FIRST_PLAYER) {
-            auto avaiableTile = std::make_tuple(0,pile->get(i));
-            moves.push_back(avaiableTile);
+    //scan the pile for available tiles      
+    for(Tile t:tileSelection) {
+        int count = 0;
+        for(int i = 0;i<pile->getSize();++i) {
+            if(pile->get(i) == t) {
+                ++count;
+            }
         }
+        auto availableTile = std::make_tuple(0,t,count);
+        moves.push_back(availableTile);
     }
+    
     
     return moves;
 }
