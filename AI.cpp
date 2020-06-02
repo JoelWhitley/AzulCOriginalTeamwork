@@ -20,36 +20,40 @@ int AI::makeTurn() {
     auto currentTuple = moves[0];
 
     //tracks the index of the current tuple
-    int tupleCounter = 0;
+    unsigned int tupleCounter = 0;
 
     /*make an intelligent move
-     * 1: Try and complete a bots own row
+     * 1: Prevent human player from completing a row
+     * 2: Try and complete a bots own row
      */
 
-    //scan each storage row
-    for(int i = 0;i<storageCount;++i) {
-        //if the storage row is not empty
-        if(controlled->getStorageCell(i,0) != NO_TILE && !foundValidLocation) {
-            Tile possibleTile = controlled->getStorageCell(i,0);
-            //initalise the number of tiles needed at the number already in the row (+1 as it takes in the displayed number, not the indexed number)
-            int numberOfTilesNeeded = controlled->countStorage(i + 1,possibleTile);
-            //the actual number needed is the row num (+1 as this is indexed from 0) - number already in the row
-            numberOfTilesNeeded = i + 1 - numberOfTilesNeeded;
 
-            //if the row is not already full
-            if(numberOfTilesNeeded > 0) {
-                
-                for(auto move:moves){
-                    if(std::get<1>(move) == possibleTile && std::get<2>(move) == numberOfTilesNeeded) {
-                        currentTuple = move;
-                        storageRow = i + 1;
-                        foundValidLocation = true;
-                    }
+    
+
+    Player* players[] = {opponent, controlled};
+    for(Player* p: players) {
+        for(int i = 0;i<storageCount;++i) {
+            //if the storage row is not empty
+            if(p->getStorageCell(i,0) != NO_TILE && !foundValidLocation) {
+                Tile possibleTile = p->getStorageCell(i,0);
+                //initalise the number of tiles needed at the number already in the row (+1 as it takes in the displayed number, not the indexed number)
+                int numberOfTilesNeeded = p->countStorage(i + 1,possibleTile);
+                //the actual number needed is the row num (+1 as this is indexed from 0) - number already in the row
+                numberOfTilesNeeded = i + 1 - numberOfTilesNeeded;
+
+                //if the row is not already full
+                if(numberOfTilesNeeded > 0) {
                     
+                    for(auto move:moves){
+                        if(std::get<1>(move) == possibleTile && std::get<2>(move) == numberOfTilesNeeded) {
+                            currentTuple = move;
+                            storageRow = i + 1;
+                            foundValidLocation = true;
+                        }
+                        
+                    }
                 }
             }
-
-
         }
     }
     
@@ -72,8 +76,16 @@ int AI::makeTurn() {
         // if all storage rows have been scanned and nothing has been found, move to the next tuple
         if(storageRow > FACTORIES) {
             ++tupleCounter;
-            currentTuple = moves[tupleCounter];
-            storageRow = 1;
+            // if there are still more possible moves to check
+            if(tupleCounter < moves.size()) {
+                currentTuple = moves[tupleCounter];
+                storageRow = 1;
+            }
+            //if no random move can be made move to broken
+            else {
+                foundValidLocation = true;
+                storageRow = 6;
+            }
         }
     }
     std::cout << std::get<0>(currentTuple) << ", " << std::get<1>(currentTuple) << ", " << storageRow << std::endl;
