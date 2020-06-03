@@ -3,6 +3,7 @@
 
 #include "LinkedList.h"
 #include "Rules.h"
+#include "TileColour.h"
 #include <iostream>
 #include <vector>
 

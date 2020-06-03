@@ -49,8 +49,7 @@ int AI::makeTurn() {
                             currentTuple = move;
                             storageRow = i + 1;
                             foundValidLocation = true;
-                        }
-                        
+                        }                       
                     }
                 }
             }

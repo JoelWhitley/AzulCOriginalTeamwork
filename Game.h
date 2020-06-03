@@ -4,12 +4,14 @@
 #include "Player.h"
 #include "Rules.h"
 #include "LinkedList.h"
+#include "TileColour.h"
 #include <string>
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <tuple>
+#include <iomanip>
 
 class Game {
     
@@ -33,8 +35,9 @@ class Game {
         void endGame();
         bool turn(Player* p, int factory, Tile tile, int row);
 
-        void printBoard(Player* p);
+        void printBoard(Player* current,Player* opponent);
         void printFactories();
+        std::string getColour(Tile t);
         void switchPlayer();
         bool checkRoundEnd();
         bool checkGameEnd(Player* p);

@@ -127,6 +127,7 @@ void Player::addToStorage(int row, std::vector<Tile> toInsert, LinkedList* boxLi
 }
 
 void Player::printStorageLine(int row) {
+    
     for(int i=row; i>=0; --i) {
         std::cout << this->storage[row][i];        
     }   

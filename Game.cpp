@@ -102,8 +102,13 @@ void Game::round() {
     while(!roundEnd) {         
         printFactories();
         std::cout << std::endl;
-        std::cout << this->currentPlayer->getName() << "'s board:" << std::endl;
-        printBoard(this->currentPlayer);
+        
+        if(this->currentPlayer == p1) {
+            printBoard(this->currentPlayer,p2);
+        }
+        else {
+            printBoard(this->currentPlayer,p1);
+        }
 
         int outcome = OUTCOME_INVALID;
         if(!this->isAI) {
@@ -120,10 +125,10 @@ void Game::round() {
             }
         }       
         if(outcome == OUTCOME_TURNSUCCESS) {
-            std::cout << "\nSuccess! " << this->currentPlayer->getName() << "'s new board:" << std::endl;
-            printBoard(this->currentPlayer); 
-            std::cout << std::endl;
             switchPlayer();
+            std::cout << "\nSuccess! It's " << this->currentPlayer->getName() << "'s turn now!" << std::endl;
+            std::cout << std::endl;
+            
         }
         else if(outcome == OUTCOME_TURNFAIL){ 
             std::cout << "Turn failed, please try something else.\n" << std::endl;
@@ -147,10 +152,8 @@ void Game::round() {
         moveTiles(p1); 
         std::cout << "SCORES FOR " << p2->getName() << ":" << std::endl; 
         moveTiles(p2);
-        std::cout << p1->getName() << "'s board:" << std::endl;
-        printBoard(p1);
-        std::cout << p2->getName() << "'s board:" << std::endl;
-        printBoard(p2);
+        printBoard(p1,p2);
+        
         endRound(); 
     }
 
@@ -385,35 +388,69 @@ void Game::printFactories() {
 
     std::cout << "Factories: " << std::endl;
     std::cout << "0: ";
+    std::string colour;
     for(int j=0; j<this->pile->getSize(); ++j) {
         std::cout << pile->get(j) << " ";
+        
     }
     std::cout << std::endl;
     for(int i=0; i<FACTORIES; ++i) {
-        std::cout << i+1 << ": ";
+        std::cout << REMOVECOLOURS << i+1 << ": ";
         for(int j=0; j < FACTORY_SIZE; ++j) { 
-            std::cout << this->factories[i][j] << " ";
+            colour = getColour(this->factories[i][j]);
+            std::cout << colour << this->factories[i][j] << REMOVECOLOURS << " ";
         }
         std::cout << std::endl;
     }
-
+}
+std::string Game::getColour(Tile t) {
+    std::string colour = REMOVECOLOURS;
+    if(t == RED) {
+        colour = REDB;
+    }
+    else if(t == YELLOW) {
+        colour = YELLOWB;
+    }
+    else if(t == LIGHT_BLUE) {
+        colour = CYANB;
+    }
+    else if(t == BLUE) {
+        colour = BLUEB;
+    }
+    else {
+        colour == BLACKB;
+    }
+    return colour;
 }
 
-void Game::printBoard(Player* p) {
-
+void Game::printBoard(Player* current,Player* opponent) {
+    
+    std::string prompt = current->getName() + "'s board:";
+    std::cout << std::left << std::setw(30) << prompt << "---  " << opponent->getName() + "'s board:" << std::endl;
     for(int i=0; i<SIZE; ++i) {
+        //print the current players board
         std::cout << i+1 << ": ";
         for(int j=0; FACTORY_SIZE > i + j; ++j) {
             std::cout << " ";
         }
-        p->printStorageLine(i);
+        current->printStorageLine(i);
         std::cout << "||";
-        p->printMosaicLine(i);
+        current->printMosaicLine(i);
+
+        // print opponents board to the right
+        std::cout << std::right << std::setw(20) << "---  ";
+        std::cout << i+1 << ": ";
+        for(int j=0; FACTORY_SIZE > i + j; ++j) {
+            std::cout << " ";
+        }
+        opponent->printStorageLine(i);
+        std::cout << "||";
+        opponent->printMosaicLine(i);
         std::cout << std::endl;
     }
     std::cout << "Broken: ";
-    for(int i=0; i < p->getBroken()->getSize(); ++i) {
-        std::cout << p->getBroken()->get(i) << " ";
+    for(int i=0; i < current->getBroken()->getSize(); ++i) {
+        std::cout << current->getBroken()->get(i) << " ";
     }
     std::cout << std::endl;
 
