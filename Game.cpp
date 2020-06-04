@@ -385,22 +385,23 @@ int Game::matchingTilesInFactory(int factory, Tile tile){
 }
 
 void Game::printFactories() {
-
+    std::string colour = REMOVECOLOURS;
     std::cout << "Factories: " << std::endl;
     std::cout << "0: ";
-    std::string colour;
     for(int j=0; j<this->pile->getSize(); ++j) {
-        std::cout << pile->get(j) << " ";
-        
+        colour = getColour(this->pile->get(j)); 
+        std::cout << colour << pile->get(j) << " ";  
     }
+    std::cout << REMOVECOLOURS;
     std::cout << std::endl;
     for(int i=0; i<FACTORIES; ++i) {
         std::cout << REMOVECOLOURS << i+1 << ": ";
         for(int j=0; j < FACTORY_SIZE; ++j) { 
             colour = getColour(this->factories[i][j]);
-            std::cout << colour << this->factories[i][j] << REMOVECOLOURS << " ";
+            std::cout << colour << this->factories[i][j];
+            std::cout << " ";
         }
-        std::cout << std::endl;
+        std::cout << REMOVECOLOURS << std::endl;
     }
 }
 std::string Game::getColour(Tile t) {
@@ -417,8 +418,8 @@ std::string Game::getColour(Tile t) {
     else if(t == BLUE) {
         colour = BLUEB;
     }
-    else {
-        colour == BLACKB;
+    else if(t == BLACK) {
+        colour = BLACKB;
     }
     return colour;
 }
@@ -448,11 +449,28 @@ void Game::printBoard(Player* current,Player* opponent) {
         opponent->printMosaicLine(i);
         std::cout << std::endl;
     }
+
+    //Broken Printing
+    std::string tileColour = REMOVECOLOURS;
     std::cout << "Broken: ";
+    //track additions to adjust where the opponents broken tiles are printed to keep their location static
+    int countSpaces = 0;
     for(int i=0; i < current->getBroken()->getSize(); ++i) {
-        std::cout << current->getBroken()->get(i) << " ";
+        tileColour = getColour(current->getBroken()->get(i));
+        std::cout << tileColour << current->getBroken()->get(i);
+        std::cout << REMOVECOLOURS << " ";
+        countSpaces = countSpaces + 2;
     }
-    std::cout << std::endl;
+    std::cout << REMOVECOLOURS;
+
+    std::cout << std::right << std::setw(27 - countSpaces) << "---  ";
+    std::cout << "Broken: ";
+    for(int i=0; i < opponent->getBroken()->getSize(); ++i) {
+        tileColour = getColour(opponent->getBroken()->get(i));
+        std::cout << tileColour << opponent->getBroken()->get(i);
+        std::cout << REMOVECOLOURS << " ";
+    }
+    std::cout << REMOVECOLOURS << std::endl;
 
 }
 
@@ -588,8 +606,10 @@ std::vector<std::tuple<int,Tile,int> > Game::availableTiles(Player* p) {
                 ++count;
             }
         }
-        auto availableTile = std::make_tuple(0,t,count);
-        moves.push_back(availableTile);
+        if(count > 0) {
+            auto availableTile = std::make_tuple(0,t,count);
+            moves.push_back(availableTile);
+        }
     }
     
     

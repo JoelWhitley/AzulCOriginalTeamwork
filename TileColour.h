@@ -1,5 +1,5 @@
 //these define background colors
-#define REMOVECOLOURS "\x1"
+#define REMOVECOLOURS "\x1B[0m"
 #define BLACKB "\x1B[40m"
 #define REDB "\x1B[41m"
 #define YELLOWB "\x1B[43m"

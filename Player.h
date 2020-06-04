@@ -23,8 +23,11 @@ class Player {
         void addToStorage(int row, LinkedList* toInsert, LinkedList* boxLid);
         void addToStorage(int row, std::vector<Tile> toInsert, LinkedList* boxLid);
         void initialiseBoard();
+
         void printStorageLine(int row);
         void printMosaicLine(int row);
+        std::string getColour(Tile t);
+
         int calcScore(int row, int col);
         void addToBroken(Tile tile);
         void moveToMosaic(int row, Tile tile);
