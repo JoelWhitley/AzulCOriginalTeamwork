@@ -127,26 +127,57 @@ void Player::addToStorage(int row, std::vector<Tile> toInsert, LinkedList* boxLi
 }
 
 void Player::printStorageLine(int row) {
-    
+    std::string tileColour;
     for(int i=row; i>=0; --i) {
-        std::cout << this->storage[row][i];        
+        if(this->storage[row][i] == NO_TILE) {
+            std::cout << this->storage[row][i];
+        }
+        else {
+            tileColour = getColour(this->storage[row][i]);
+            std::cout << tileColour << this->storage[row][i];
+            std::cout <<REMOVECOLOURS;
+            
+        }        
     }   
 }
 
 void Player::printMosaicLine(int row) {
+    std::string tileColour;
     for(int col=0; col<SIZE; col++) {
         Tile currTile = mosaic[row][col];
         if(currTile!=NO_TILE){
-            std::cout << currTile;
+            tileColour = getColour(currTile);
+            std::cout << tileColour << currTile;
         }
         else {
             //this stumped me for quite awhile
             //i had excel spreadsheets and a whiteboard and six wolframalpha tabs telling me that (col-row)%SIZE should work
             //turns out java and c++ modulo isn't actually true modulo, and that negative remainders can result
             //so you have to spaghetti it to a true modulo
-            std::cout << (char)tolower(topRowOrder[(((col-row) % SIZE) + SIZE) % SIZE]);
+            std::cout << REMOVECOLOURS << (char)tolower(topRowOrder[(((col-row) % SIZE) + SIZE) % SIZE]);
         }
     }
+    std::cout << REMOVECOLOURS;
+}
+
+std::string Player::getColour(Tile t) {
+    std::string colour = REMOVECOLOURS;
+    if(t == RED) {
+        colour = REDB;
+    }
+    else if(t == YELLOW) {
+        colour = YELLOWB;
+    }
+    else if(t == LIGHT_BLUE) {
+        colour = CYANB;
+    }
+    else if(t == BLUE) {
+        colour = BLUEB;
+    }
+    else if (t == BLACK) {
+        colour = BLACKB;
+    }
+    return colour;
 }
 
 //counts the total amount of tiles chained to the input co-ordinate vertically and horizontally
