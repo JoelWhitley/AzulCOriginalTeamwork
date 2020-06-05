@@ -125,15 +125,15 @@ void aiGame() {
 
     std::cout << "Enter a name for Player 1:\n";
     player1name = userInput();
-    std::cout << "Enter a name for the bot:\n";
-    player2name = userInput();
     
     Player* player1 = new Player(player1name);
-    Player* player2 = new Player(player2name);
 
-    game = new Game(player1, player2, 0,true);
-    std::cout << std::endl << player1->getName() << ", let's play AZUL!\n\n";
-    game->generateTileBag(0);
+    //player 2 is a bot here
+    Player* player2 = new Player("Bot");
+
+    game = new Game(player1, player2, 0, true);
+    std::cout << std::endl << player1->getName() << ", try and beat the bot , let's play AZUL!\n\n";
+    game->generateTileBag(1234);
     game->play();
 }
 

@@ -37,7 +37,6 @@ class Game {
 
         void printBoard(Player* current,Player* opponent);
         void printFactories();
-        std::string getColour(Tile t);
         void switchPlayer();
         bool checkRoundEnd();
         bool checkGameEnd(Player* p);
@@ -53,6 +52,8 @@ class Game {
         void setPlayerWithFPTile(Player* p);
         Tile getTileWithinFactory(int row, int column);
         std::vector<std::tuple<int,Tile,int> > availableTiles(Player* p);
+        void setAI(std::string aiState);
+        std::string getAi();
         
     private:
 

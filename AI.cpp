@@ -87,7 +87,7 @@ int AI::makeTurn() {
             }
         }
     }
-    std::cout << std::get<0>(currentTuple) << ", " << std::get<1>(currentTuple) << ", " << storageRow << std::endl;
+    std::cout << "The bot made this move: " << std::get<0>(currentTuple) << ", " << std::get<1>(currentTuple) << ", " << storageRow << std::endl;
     this->game->turn(controlled,std::get<0>(currentTuple),std::get<1>(currentTuple),storageRow);
     return 0;
 }

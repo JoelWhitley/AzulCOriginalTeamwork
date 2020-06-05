@@ -21,6 +21,10 @@ void SaveAndLoad::loadGame(std::istream& inputStream) {
     Player* players[] = {p1,p2};
 
     while(inputStream.good() && !loadComplete){
+
+        std::string aiState = "false";
+        getline(inputStream,aiState); 
+        game->setAI(aiState);
         
         std::string name; 
         for(Player* player:players) {                       //SET PLAYER NAMES   
@@ -144,7 +148,7 @@ void SaveAndLoad::saveGame(){
  
         std::ofstream file;
         file.open(fileName);
- 
+        file << game->getAi() << std::endl;
         file << p1->getName()<< std::endl;                  //PLAYER 1 NAME
         file << p2->getName()<< std::endl;                  //PLAYER 2 NAME
         file << p1->getPoints() << std::endl;               //PLAYER 1 POINTS

@@ -32,6 +32,10 @@ void Game::generateTileBag(int seed){
     }
     else {
         //specific seed generation
+        for(int tile=0; tile<GAME_TILES; tile++){
+            int newSeed = seed*tile;
+            tileBag->addBack(tileSelection[newSeed%SIZE]);
+        }
     }
 
 }
@@ -389,7 +393,7 @@ void Game::printFactories() {
     std::cout << "Factories: " << std::endl;
     std::cout << "0: ";
     for(int j=0; j<this->pile->getSize(); ++j) {
-        colour = getColour(this->pile->get(j)); 
+        colour = currentPlayer->getColour(this->pile->get(j)); 
         std::cout << colour << pile->get(j) << " ";  
     }
     std::cout << REMOVECOLOURS;
@@ -397,32 +401,14 @@ void Game::printFactories() {
     for(int i=0; i<FACTORIES; ++i) {
         std::cout << REMOVECOLOURS << i+1 << ": ";
         for(int j=0; j < FACTORY_SIZE; ++j) { 
-            colour = getColour(this->factories[i][j]);
+            colour = currentPlayer->getColour(this->factories[i][j]);
             std::cout << colour << this->factories[i][j];
             std::cout << " ";
         }
         std::cout << REMOVECOLOURS << std::endl;
     }
 }
-std::string Game::getColour(Tile t) {
-    std::string colour = REMOVECOLOURS;
-    if(t == RED) {
-        colour = REDB;
-    }
-    else if(t == YELLOW) {
-        colour = YELLOWB;
-    }
-    else if(t == LIGHT_BLUE) {
-        colour = CYANB;
-    }
-    else if(t == BLUE) {
-        colour = BLUEB;
-    }
-    else if(t == BLACK) {
-        colour = BLACKB;
-    }
-    return colour;
-}
+
 
 void Game::printBoard(Player* current,Player* opponent) {
     
@@ -456,7 +442,7 @@ void Game::printBoard(Player* current,Player* opponent) {
     //track additions to adjust where the opponents broken tiles are printed to keep their location static
     int countSpaces = 0;
     for(int i=0; i < current->getBroken()->getSize(); ++i) {
-        tileColour = getColour(current->getBroken()->get(i));
+        tileColour = currentPlayer->getColour(current->getBroken()->get(i));
         std::cout << tileColour << current->getBroken()->get(i);
         std::cout << REMOVECOLOURS << " ";
         countSpaces = countSpaces + 2;
@@ -466,7 +452,7 @@ void Game::printBoard(Player* current,Player* opponent) {
     std::cout << std::right << std::setw(27 - countSpaces) << "---  ";
     std::cout << "Broken: ";
     for(int i=0; i < opponent->getBroken()->getSize(); ++i) {
-        tileColour = getColour(opponent->getBroken()->get(i));
+        tileColour = currentPlayer->getColour(opponent->getBroken()->get(i));
         std::cout << tileColour << opponent->getBroken()->get(i);
         std::cout << REMOVECOLOURS << " ";
     }
@@ -614,4 +600,19 @@ std::vector<std::tuple<int,Tile,int> > Game::availableTiles(Player* p) {
     
     
     return moves;
+}
+void Game::setAI(std::string aiState) {
+    if(aiState == "true") {
+        this->isAI = true;
+    }
+    else {
+        this->isAI = false;
+    }
+}
+std::string Game::getAi() {
+    std::string stateAsString = "false";
+    if(this->isAI) {
+        stateAsString = "true";
+    }
+    return stateAsString;
 }
