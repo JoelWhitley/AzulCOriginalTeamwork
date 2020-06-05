@@ -411,9 +411,13 @@ void Game::printFactories() {
 
 
 void Game::printBoard(Player* current,Player* opponent) {
+
+    int NAMEOFFSET = 30;
+    int STORAGEOFFSET = 20;
+    int MAXBROKENOFFSET = 27;
     
     std::string prompt = current->getName() + "'s board:";
-    std::cout << std::left << std::setw(30) << prompt << "---  " << opponent->getName() + "'s board:" << std::endl;
+    std::cout << std::left << std::setw(NAMEOFFSET) << prompt << "---  " << opponent->getName() + "'s board:" << std::endl;
     for(int i=0; i<SIZE; ++i) {
         //print the current players board
         std::cout << i+1 << ": ";
@@ -425,7 +429,7 @@ void Game::printBoard(Player* current,Player* opponent) {
         current->printMosaicLine(i);
 
         // print opponents board to the right
-        std::cout << std::right << std::setw(20) << "---  ";
+        std::cout << std::right << std::setw(STORAGEOFFSET) << "---  ";
         std::cout << i+1 << ": ";
         for(int j=0; FACTORY_SIZE > i + j; ++j) {
             std::cout << " ";
@@ -449,7 +453,7 @@ void Game::printBoard(Player* current,Player* opponent) {
     }
     std::cout << REMOVECOLOURS;
 
-    std::cout << std::right << std::setw(27 - countSpaces) << "---  ";
+    std::cout << std::right << std::setw(MAXBROKENOFFSET - countSpaces) << "---  ";
     std::cout << "Broken: ";
     for(int i=0; i < opponent->getBroken()->getSize(); ++i) {
         tileColour = currentPlayer->getColour(opponent->getBroken()->get(i));
@@ -522,13 +526,59 @@ int Game::getMosaicColumnByTile(int row, Tile tile){
 }
 
 void Game::printHelp(){
-    std::cout << "------VALID COMMANDS------\n" <<
-    "turn <factory> <tile> <destination row (" << FLOOR_ROW << " for the floor)>\n" <<
-    "save\n" <<
-    "exit\n" <<
-    "--------------------------\n";
+    std::cout << "In order to make a turn you must use the following format:" << std::endl;
+    std::cout << "turn <factory> <tile> <row> " << std::endl;
+    std::cout << "where: <factory> is replaced with the factory number you wish to pull from" << std::endl;
+    std::cout << "<tile> is the tile you want from that factory" << std::endl;
+    std::cout << "<row> one of your storage rows that you want to insert into (choose 6 to place straight into your broken tiles)" << std::endl;
+    std::tuple<int,Tile,int> move = getValidMove();
+
+    std::cout << "For example, a valid turn for you would be: turn ";
+    std::cout << std::get<0>(move) << " " << std::get<1>(move) << " " << std::get<2>(move) << " " << std::endl;
+    std::cout << std::endl;
+    std::string waitForInput = "";
+    std::cout << "Press enter to continue..." << std::endl;
+    waitForInput = userInput();
 }
 
+std::tuple<int,Tile,int> Game::getValidMove() {
+    Tile possibleTile = NO_TILE;
+    Tile toInsert = NO_TILE;
+    std::tuple<int,Tile,int> move;
+    int factory = 0;
+    int row = -1;
+    bool foundMove = false;
+    for(int i = 0;i<FACTORIES;++i) {
+        possibleTile = currentPlayer->getStorageCell(i,0);
+        if(possibleTile == NO_TILE) {
+            row = i + 1;
+        }
+    }
+    if(row == -1) {
+        row = 6;
+    }
+
+    for(int i = 0;i<FACTORIES;++i) {
+        possibleTile = factories[i][0];
+        if(possibleTile != NO_TILE && !foundMove) {
+            factory = i + 1;
+            toInsert = possibleTile;
+            foundMove = true;
+        }
+    }
+    if(!foundMove) {
+        for(int i = 0;i<pile->getSize();++i) {
+            if(!foundMove && pile->get(i) != FIRST_PLAYER) {
+                toInsert = pile->get(i);
+                foundMove = true;
+            }
+        }
+    }
+    if(!foundMove) {
+        row = 6;
+    }
+    return std::make_tuple(factory,toInsert,row);
+}
 void Game::saveGame() {            
         SaveAndLoad* save = new SaveAndLoad(this,this->p1, this->p2, this->pile,
                 this->tileBag, this->boxLid, this->currentPlayer);
@@ -578,7 +628,7 @@ std::vector<std::tuple<int,Tile,int> > Game::availableTiles(Player* p) {
                 }
             }
             if(count > 0){
-                auto availableTile = std::make_tuple(i+1,t,count);
+                std::tuple<int,Tile,int> availableTile = std::make_tuple(i+1,t,count);
                 moves.push_back(availableTile);
             }
         }
@@ -593,7 +643,7 @@ std::vector<std::tuple<int,Tile,int> > Game::availableTiles(Player* p) {
             }
         }
         if(count > 0) {
-            auto availableTile = std::make_tuple(0,t,count);
+            std::tuple<int,Tile,int> availableTile = std::make_tuple(0,t,count);
             moves.push_back(availableTile);
         }
     }

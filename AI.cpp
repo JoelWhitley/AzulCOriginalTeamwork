@@ -7,6 +7,7 @@ AI::AI(Player* opponent, Player* controlled, Game* game)
 }
 
 AI::~AI() {
+    delete this;
 }
 
 int AI::makeTurn() {
@@ -17,7 +18,7 @@ int AI::makeTurn() {
     int storageRow = 1; 
 
     //the tuple currently having it's data checked to see if there's a valid move
-    auto currentTuple = moves[0];
+    std::tuple<int,Tile,int> currentTuple = moves[0];
 
     //tracks the index of the current tuple
     unsigned int tupleCounter = 0;
@@ -31,6 +32,7 @@ int AI::makeTurn() {
     
 
     Player* players[] = {opponent, controlled};
+    bool foundValidRow = true;
     for(Player* p: players) {
         for(int i = 0;i<storageCount;++i) {
             //if the storage row is not empty
@@ -44,14 +46,45 @@ int AI::makeTurn() {
                 //if the row is not already full
                 if(numberOfTilesNeeded > 0) {
                     
-                    for(auto move:moves){
+                    for(std::tuple<int,Tile,int> move:moves) {
+                        //if a move is found
                         if(std::get<1>(move) == possibleTile && std::get<2>(move) == numberOfTilesNeeded) {
-                            currentTuple = move;
-                            storageRow = i + 1;
+                            //set the current move as the move to make later in the method
+                            currentTuple = move; 
+
+                            //if denying the opponent, a valid storage still needs to be found 
+                            if(p == opponent) {
+                                foundValidRow = false;
+                            }
+                            //otherwise the bot is completing one of it's own rows, so it can just set the current storage as the one to insert to
+                            else {
+                                storageRow = i + 1; 
+                            }
+
+                            //prevent further changes to the move
                             foundValidLocation = true;
                         }                       
                     }
                 }
+            }
+        }
+    }
+
+    if(!foundValidRow) {
+        for(int i = 0;i<storageCount;++i) {
+            Tile t = controlled->getStorageCell(i,0);
+            if(t == std::get<1>(currentTuple) && controlled->countStorage(i + 1,t) < i + 1) {
+                storageRow = i + 1;
+                foundValidRow = true;
+            }
+        }
+    }
+    if(!foundValidRow) {
+        for(int i = 0;i<storageCount;++i) {
+            Tile t = controlled->getStorageCell(i,0);
+            if(t == NO_TILE && controlled->mosaicRowHasTile(storageRow,std::get<1>(currentTuple)) == false && !foundValidRow) {
+                storageRow = i + 1;
+                foundValidRow = true;
             }
         }
     }
@@ -87,7 +120,7 @@ int AI::makeTurn() {
             }
         }
     }
-    std::cout << "The bot made this move: " << std::get<0>(currentTuple) << ", " << std::get<1>(currentTuple) << ", " << storageRow << std::endl;
+    std::cout << "The bot made this move: turn " << std::get<0>(currentTuple) << " " << std::get<1>(currentTuple) << " " << storageRow << std::endl;
     this->game->turn(controlled,std::get<0>(currentTuple),std::get<1>(currentTuple),storageRow);
     return 0;
 }

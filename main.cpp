@@ -11,6 +11,7 @@ void newGame();
 void printCredits();
 void loadGame();
 void aiGame();
+void printHelp();
 std::string userPrompt();
 
 bool running;
@@ -40,9 +41,10 @@ void mainMenu() {
 	std::cout << "*** Welcome to 🅰 🆉 🆄 🅻 ***" << std::endl;
 	std::cout << "(1): New Game" << std::endl;
     std::cout << "(2): Load Game" << std::endl;
-    std::cout << "(3): Credits" << std::endl;
-    std::cout << "(4): AI Game" << std::endl;
-    std::cout << "(5): Exit" << std::endl;
+    std::cout << "(3): AI Game" << std::endl;
+    std::cout << "(4): Help" << std::endl;
+    std::cout << "(5): Credits" << std::endl;
+    std::cout << "(6): Exit" << std::endl;
     std::string input = userInput();
     std::stringstream ss(input);
     int choice = 0;
@@ -55,17 +57,20 @@ void mainMenu() {
 		loadGame();
     }
     else if(choice == 3) {
-		printCredits();
+		aiGame();
     }
     else if(choice == 4) {
-        aiGame();
+        printHelp();
     }
     else if(choice == 5) {
+        printCredits();
+    }
+    else if(choice == 6) {
         std::cout << "Goodbye." << std::endl;
         running = false;
     }
 	else {
-		std::cout << "Invalid choice." << std::endl;	
+		std::cout << "Invalid choice. Type help for more information" << std::endl;	
 	}
 
     return;
@@ -149,7 +154,18 @@ void printCredits() {
     return;
 
 }
-
+void printHelp() {
+    std::cout << "--Welcome to AZUL, a game of tiles--" << std::endl;
+    std::cout << "To win the game, you need to score more points than your opponent" << std::endl;
+    std::cout << "Score points by completing rows but be careful, you'll lose points if you overfill a row" << std::endl;
+    std::cout << std::endl;
+    std::cout << "After leaving this help menu, you'll be presented with some options" << std::endl;
+    std::cout << "Input the corresponding number to choose an option" << std::endl;
+    std::cout << "Remember to type help during the game for more info on how to make a turn" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Press enter to continue..." << std::endl;
+    std::string input = userInput();
+}
 std::string userInput(){
 
     std::string input;

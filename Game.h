@@ -54,6 +54,7 @@ class Game {
         std::vector<std::tuple<int,Tile,int> > availableTiles(Player* p);
         void setAI(std::string aiState);
         std::string getAi();
+        std::tuple<int,Tile,int> getValidMove();
         
     private:
 
